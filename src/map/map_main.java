@@ -281,10 +281,11 @@ public class map_main extends JPanel implements KeyListener{
 					status = 0;
 					key_state = 0;
 				}else if(key_state == 6){	//Battle 
+					key_state = 0;
 					//this.clear();
-					status = 3;
-					button1.setVisible(false);
-					p.setVisible(false);
+//					status = 3;
+//					button1.setVisible(false);
+//					p.setVisible(false);
 					//not developed yet
 				}else if(key_state == 7){	//SPACE action (Menu)
 					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
