@@ -1,3 +1,16 @@
+# game
+This is NOT open source project.
+
+[Previous version](https://drive.google.com/drive/folders/0Bw0pbRfg9sLaRUc5dFAyZ2ZxZHM)
+
+## Description
+This is a repository of game project.
+First commit is 20160624 version. If you want to get a previous version, please access Google Drive.
+
+All files are commited from Eclipse directly.
+
+## Introduciton and how to merge
+
 gitの導入と使い方
 
 1.新規登録は各自で済ませましょう。
@@ -26,14 +39,13 @@ addが一通り行えれば、もう一度git status と打ち込んで緑色で
 10.次に作成したレポジトリにコミットを行います。git commit -m (修正した内容に対する簡単なコメント) を打ち込んで files changed, inserctions などの文字が出てこればOKです。
 次に、更新が行えたかをgit logで確認します。すると、更新履歴がコンソールに表示されるので、一番上に自分の打ち込んだコメントが付いている更新履歴が表示されているかを確認します。
 
-11.最後に、編集した内容を元のマスターブランチに適用させます。git push origin (作成したブランチ名)を打ち込むと、Githubの登録の時に入力したユーザー名とパスワードを要求されるので打ち込みましょう。
-最後に、(作成したブランチ名)->(作成したブランチ名)がコンソールに出力されればOKです。
+11.最後に、編集した内容を元のマスターブランチに適用させます。git push origin を打ち込むと、Githubの登録の時に入力したユーザー名とパスワードを要求されるので打ち込みましょう。
+最後に、master->masterがコンソールに出力されればOKです。
 
 12.次に、Githubの自分のWebページにアクセスして、フォークしたプロジェクトにアクセスします。アクセス後、「New pull request」というボタンを押すと、自分の編集した内容を送る画面に移動します。
 このプルリク元と先が自分の作成したブランチから元のゲームプロジェクトのブランチになっているかを確認し、確認できたらリクエストを送ります。
 
 13.その後、SweetGPのGithubアカウントにログインして、自分の送ったリクエストが届いているはずです。
 リクエストページに移動して、Mergeのボタンを押して統合完了です。
-
 
 お疲れ様でした、わからないことがあれば北山か大上に聞いてください。
