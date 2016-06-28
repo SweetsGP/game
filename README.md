@@ -11,6 +11,9 @@ All files are commited from Eclipse directly.
 
 ## Introduciton and how to merge
 
+This link is a reference for this information.
+In particular, check item No.2 ~ 4 and 10.
+[チーム開発 GitHubの使い方](http://qiita.com/syougun360/items/013229aeddec08121474)
 
 1.新規登録は各自で済ませましょう。
 
