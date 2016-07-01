@@ -424,7 +424,7 @@ public class map_main extends JPanel implements KeyListener{
 					p.repaint();
 					y = y - 1;
 					move_stop--;
-					Thread.sleep(10);
+					Thread.sleep(8);
 				}
 				a--;
 			}else if(i == 2){
@@ -433,7 +433,7 @@ public class map_main extends JPanel implements KeyListener{
 					p.repaint();
 					y = y + 1;
 					move_stop--;
-					Thread.sleep(10);
+					Thread.sleep(8);
 				}
 				a++;
 			}else if(i == 3){
@@ -442,7 +442,7 @@ public class map_main extends JPanel implements KeyListener{
 					p.repaint();
 					x = x - 1;
 					move_stop--;
-					Thread.sleep(10);
+					Thread.sleep(8);
 				}
 				b--;
 			}else if(i == 4){
@@ -451,7 +451,7 @@ public class map_main extends JPanel implements KeyListener{
 					p.repaint();
 					x = x + 1;
 					move_stop--;
-					Thread.sleep(10);
+					Thread.sleep(8);
 				}
 				b++;
 			}
