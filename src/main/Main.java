@@ -195,7 +195,7 @@ public class Main {
 					DataBase.wExecuteUpdate("insert into testitems values ("
 							+ "1, 'キズぐすり', 100, 'kizugusuri.png', 'Kizugusuri', 'HPを50だけ回復する', 10)");
 					DataBase.wExecuteUpdate("insert into testitems values ("
-							+ "2, 'いいキズぐすり', 150, 'kizugusuri.png', 'Kizugusuri', 'HPを100だけ回復する', 0)");
+							+ "2, 'いいキズぐすり', 150, 'kizugusuri.png', 'IiKizugusuri', 'HPを100だけ回復する', 0)");
 					DataBase.wExecuteUpdate("insert into testitems values ("
 							+ "3, 'すごいキズぐすり', 200, 'kizugusuri.png', 'SugoiKizugusuri', 'HPを150だけ回復する', 3)");
 					DataBase.wExecuteUpdate("insert into testitems values ("
@@ -203,6 +203,8 @@ public class Main {
 					
 					DataBase.wExecuteUpdate("insert into testnpcs values ("
 							+ "1, 'まさお', '', '1, 2, 3, 4')");
+					DataBase.wExecuteUpdate("insert into testnpcs values ("
+							+ "2, 'たろう', '', '')");
 				} catch (SQLException sqle) {
 					sqle.printStackTrace();
 				}
