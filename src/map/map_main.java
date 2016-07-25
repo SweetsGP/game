@@ -223,7 +223,7 @@ public class map_main extends JPanel implements KeyListener{
 						button1.setVisible(false);
 						p.setVisible(false);
 						
-						s.bgmStop(0);
+						s.bgmStop();
 						//not developed yet
 						controller.showBattlemainPanel();
 						bp_map = (Battlemain )controller.getPanelInstance(PanelController.BATTLE);
@@ -306,7 +306,7 @@ public class map_main extends JPanel implements KeyListener{
 			npcObjects[i].shutdown();
 		}
 
-		s.bgmStop(0);
+		s.bgmStop();
 
 		p.setVisible(false);
 		this.setVisible(false);

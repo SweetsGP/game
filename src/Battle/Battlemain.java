@@ -68,7 +68,7 @@ public class Battlemain extends JPanel implements ActionListener{
 
 		try {
 			testname = DataBase.wExecuteQuery("SELECT name FROM testhasmonsters WHERE orderNum = 1");
-			testskill=DataBase.wExecuteQuery("SELECT * FROM testskills");
+			testskill = DataBase.wExecuteQuery("SELECT * FROM testskills");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -330,7 +330,7 @@ public class Battlemain extends JPanel implements ActionListener{
 			canvas.repaint();
 		}
 
-		s.bgmStop(3);
+		s.bgmStop();
 
 		requestFocus(false);
 //		controller.showTitlePanel();

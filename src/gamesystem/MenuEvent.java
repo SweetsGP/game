@@ -44,7 +44,6 @@ public class MenuEvent {
 			hasItemsInfo = DataBase.wExecuteQuery("select * from testitems where count > 0 order by itemId asc");
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
-
 		}
 
 		return hasItemsInfo;

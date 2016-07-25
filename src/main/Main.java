@@ -88,126 +88,126 @@ public class Main {
 				DataBase.openDB();
 				
 				// test code(テスト用テーブル生成)
-				try {
-					// 手持ちモンスターテーブル(仮)
-					DataBase.wExecuteUpdate("drop table if exists testhasmonsters");
-					DataBase.wExecuteUpdate("create table testhasmonsters("
-							+ "getId int,"
-							+ "orderNum int,"
-							+ "monsterId int,"
-							+ "name text,"
-							+ "img text,"
-							+ "level int,"
-							+ "exp int,"
-							+ "hp int,"
-							+ "maxhp int,"
-							+ "state int,"
-							+ "attack int,"
-							+ "defense int,"
-							+ "speed int,"
-							+ "skill1Id int,"
-							+ "skill1Point int,"
-							+ "skill2Id int,"
-							+ "skill2Point int,"
-							+ "skill3Id int,"
-							+ "skill3Point int,"
-							+ "skill4Id int,"
-							+ "skill4Point int)");
-					// モンスター図鑑テーブル(仮)
-					DataBase.wExecuteUpdate("drop table if exists testmonsters");
-					DataBase.wExecuteUpdate("create table testmonsters("
-							+ "monsterId int,"
-							+ "name text,"
-							+ "img text,"
-							+ "type1 int,"
-							+ "type2 int,"
-							+ "bAttack int,"
-							+ "bDefense int,"
-							+ "bSpeed int)");
-					// 経験値テーブル(仮)
-					DataBase.wExecuteUpdate("drop table if exists testexp");
-					DataBase.wExecuteUpdate("create table testexp("
-							+ "level int,"
-							+ "exp int,"
-							+ "attackInc int,"
-							+ "defenseInc int,"
-							+ "speedInc int)");
-					// 技テーブル(仮)
-					DataBase.wExecuteUpdate("drop table if exists testskills");
-					DataBase.wExecuteUpdate("create table testskills("
-							+ "skillId int,"
-							+ "name text,"
-							+ "type int,"
-							+ "sp int,"
-							+ "power int,"
-							+ "hitrate int)");
-					// アイテムテーブル(仮)
-					DataBase.wExecuteUpdate("drop table if exists testitems");
-					DataBase.wExecuteUpdate("create table testitems("
-							+ "itemId int,"
-							+ "name text,"
-							+ "price int,"
-							+ "img text,"
-							+ "handler text,"
-							+ "description text,"
-							+ "count int)");
-					// NPC情報テーブル(仮)
-					DataBase.wExecuteUpdate("drop table if exists testnpcs");
-					DataBase.wExecuteUpdate("create table testnpcs("
-							+ "id int,"
-							+ "name text,"
-							+ "talk text,"
-							+ "productIds text)");
-
-					DataBase.wExecuteUpdate("insert into testhasmonsters values ("
-							+ "1, 2, 1, 'gorityuu', 'gorityu.png', 55, 15000, 10, 150, 'まひ', 100, 100, 100,"
-							+ "1, 15,"
-							+ "2, 20,"
-							+ "null, null,"
-							+ "null, null)");
-					DataBase.wExecuteUpdate("insert into testhasmonsters values ("
-							+ "2, 1, 1, 'ウホチュウ', 'gorityu.png', 33, 9800, 90, 90, null, 80, 65, 50,"
-							+ "1, 30,"
-							+ "2, 11,"
-							+ "null, null,"
-							+ "null, null)");
-					DataBase.wExecuteUpdate("insert into testhasmonsters values ("
-							+ "3, null, 1, 'ピカチュウ', 'gorityu.png', 33, 9800, 90, 90, null, 80, 65, 50,"
-							+ "1, 30,"
-							+ "2, 11,"
-							+ "null, null,"
-							+ "null, null)");
-
-					DataBase.wExecuteUpdate("insert into testmonsters values ("
-							+ "1, 'gorityuu',"
-							+ "'gorityu.png', 1, 2, 10, 10, 10)");
-
-					DataBase.wExecuteUpdate("insert into testexp values ("
-							+ "34, 10000, 2, 3, 5)");
-					DataBase.wExecuteUpdate("insert into testexp values ("
-							+ "56, 20000, 3, 1, 0)");
-
-					DataBase.wExecuteUpdate("insert into testskills values ("
-							+ "1, 'たいあたり', 2, 30, 50, 90)");
-					DataBase.wExecuteUpdate("insert into testskills values ("
-							+ "2, 'かみなり', 1, 20, 90, 90)");
-
-					DataBase.wExecuteUpdate("insert into testitems values ("
-							+ "1, 'キズぐすり', 100, 'kizugusuri.png', 'Kizugusuri', 'HPを50だけ回復する', 10)");
-					DataBase.wExecuteUpdate("insert into testitems values ("
-							+ "2, 'いいキズぐすり', 150, 'kizugusuri.png', 'IiKizugusuri', 'HPを100だけ回復する', 0)");
-					DataBase.wExecuteUpdate("insert into testitems values ("
-							+ "3, 'すごいキズぐすり', 200, 'kizugusuri.png', 'SugoiKizugusuri', 'HPを150だけ回復する', 3)");
-					DataBase.wExecuteUpdate("insert into testitems values ("
-							+ "4, '自転車のベル', 0, 'kizugusuri.png', 'BellOfBike', '自転車のベルの音がなるよ〜', 5)");
-					
-					DataBase.wExecuteUpdate("insert into testnpcs values ("
-							+ "1, 'まさお', '', '1, 2, 3, 4')");
-					DataBase.wExecuteUpdate("insert into testnpcs values ("
-							+ "2, 'たろう', '', '')");
-				} catch (SQLException sqle) {
-					sqle.printStackTrace();
-				}
+//				try {
+//					// 手持ちモンスターテーブル(仮)
+//					DataBase.wExecuteUpdate("drop table if exists testhasmonsters");
+//					DataBase.wExecuteUpdate("create table testhasmonsters("
+//							+ "getId int,"
+//							+ "orderNum int,"
+//							+ "monsterId int,"
+//							+ "name text,"
+//							+ "img text,"
+//							+ "level int,"
+//							+ "exp int,"
+//							+ "hp int,"
+//							+ "maxhp int,"
+//							+ "state int,"
+//							+ "attack int,"
+//							+ "defense int,"
+//							+ "speed int,"
+//							+ "skill1Id int,"
+//							+ "skill1Point int,"
+//							+ "skill2Id int,"
+//							+ "skill2Point int,"
+//							+ "skill3Id int,"
+//							+ "skill3Point int,"
+//							+ "skill4Id int,"
+//							+ "skill4Point int)");
+//					// モンスター図鑑テーブル(仮)
+//					DataBase.wExecuteUpdate("drop table if exists testmonsters");
+//					DataBase.wExecuteUpdate("create table testmonsters("
+//							+ "monsterId int,"
+//							+ "name text,"
+//							+ "img text,"
+//							+ "type1 int,"
+//							+ "type2 int,"
+//							+ "bAttack int,"
+//							+ "bDefense int,"
+//							+ "bSpeed int)");
+//					// 経験値テーブル(仮)
+//					DataBase.wExecuteUpdate("drop table if exists testexp");
+//					DataBase.wExecuteUpdate("create table testexp("
+//							+ "level int,"
+//							+ "exp int,"
+//							+ "attackInc int,"
+//							+ "defenseInc int,"
+//							+ "speedInc int)");
+//					// 技テーブル(仮)
+//					DataBase.wExecuteUpdate("drop table if exists testskills");
+//					DataBase.wExecuteUpdate("create table testskills("
+//							+ "skillId int,"
+//							+ "name text,"
+//							+ "type int,"
+//							+ "sp int,"
+//							+ "power int,"
+//							+ "hitrate int)");
+//					// アイテムテーブル(仮)
+//					DataBase.wExecuteUpdate("drop table if exists testitems");
+//					DataBase.wExecuteUpdate("create table testitems("
+//							+ "itemId int,"
+//							+ "name text,"
+//							+ "price int,"
+//							+ "img text,"
+//							+ "handler text,"
+//							+ "description text,"
+//							+ "count int)");
+//					// NPC情報テーブル(仮)
+//					DataBase.wExecuteUpdate("drop table if exists testnpcs");
+//					DataBase.wExecuteUpdate("create table testnpcs("
+//							+ "id int,"
+//							+ "name text,"
+//							+ "talk text,"
+//							+ "productIds text)");
+//
+//					DataBase.wExecuteUpdate("insert into testhasmonsters values ("
+//							+ "1, 2, 1, 'gorityuu', 'gorityu.png', 55, 15000, 10, 150, 'まひ', 100, 100, 100,"
+//							+ "1, 15,"
+//							+ "2, 20,"
+//							+ "null, null,"
+//							+ "null, null)");
+//					DataBase.wExecuteUpdate("insert into testhasmonsters values ("
+//							+ "2, 1, 1, 'ウホチュウ', 'gorityu.png', 33, 9800, 90, 90, null, 80, 65, 50,"
+//							+ "1, 30,"
+//							+ "2, 11,"
+//							+ "null, null,"
+//							+ "null, null)");
+//					DataBase.wExecuteUpdate("insert into testhasmonsters values ("
+//							+ "3, null, 1, 'ピカチュウ', 'gorityu.png', 33, 9800, 90, 90, null, 80, 65, 50,"
+//							+ "1, 30,"
+//							+ "2, 11,"
+//							+ "null, null,"
+//							+ "null, null)");
+//
+//					DataBase.wExecuteUpdate("insert into testmonsters values ("
+//							+ "1, 'gorityuu',"
+//							+ "'gorityu.png', 1, 2, 10, 10, 10)");
+//
+//					DataBase.wExecuteUpdate("insert into testexp values ("
+//							+ "34, 10000, 2, 3, 5)");
+//					DataBase.wExecuteUpdate("insert into testexp values ("
+//							+ "56, 20000, 3, 1, 0)");
+//
+//					DataBase.wExecuteUpdate("insert into testskills values ("
+//							+ "1, 'たいあたり', 2, 30, 50, 90)");
+//					DataBase.wExecuteUpdate("insert into testskills values ("
+//							+ "2, 'かみなり', 1, 20, 90, 90)");
+//
+//					DataBase.wExecuteUpdate("insert into testitems values ("
+//							+ "1, 'キズぐすり', 100, 'kizugusuri.png', 'Kizugusuri', 'HPを50だけ回復する', 10)");
+//					DataBase.wExecuteUpdate("insert into testitems values ("
+//							+ "2, 'いいキズぐすり', 150, 'kizugusuri.png', 'IiKizugusuri', 'HPを100だけ回復する', 0)");
+//					DataBase.wExecuteUpdate("insert into testitems values ("
+//							+ "3, 'すごいキズぐすり', 200, 'kizugusuri.png', 'SugoiKizugusuri', 'HPを150だけ回復する', 3)");
+//					DataBase.wExecuteUpdate("insert into testitems values ("
+//							+ "4, '自転車のベル', 0, 'kizugusuri.png', 'BellOfBike', '自転車のベルの音がなるよ〜', 5)");
+//					
+//					DataBase.wExecuteUpdate("insert into testnpcs values ("
+//							+ "1, 'まさお', '', '1, 2, 3, 4')");
+//					DataBase.wExecuteUpdate("insert into testnpcs values ("
+//							+ "2, 'たろう', '', '')");
+//				} catch (SQLException sqle) {
+//					sqle.printStackTrace();
+//				}
 				////////
 
 				// フレーム(ウィンドウ生成)
@@ -218,7 +218,7 @@ public class Main {
 				Sound s = new Sound();
 
 				// 画面遷移管理初期化
-				PanelController.init(mainFrame);
+				PanelController.init(mainFrame, s);
 
 				// ==================================================
 				// ゲーム内メインルーチン
