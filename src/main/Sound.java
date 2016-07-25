@@ -7,17 +7,27 @@ import java.io.*;
 import javax.sound.sampled.*;
 
 public class Sound implements LineListener {
+	private static final int SOUND_NO_SELECTED = -1;
+	
 	Clip[] bgm; // BGM 
 	Clip[] se; // se 
 
 	int bgm_num, se_num;
 	private static final int BGM_NUMBER = 4;
 	private static final int SE_NUMBER = 1;
+	
+	private static int nowBgm = SOUND_NO_SELECTED;
+	private static int nowSe = SOUND_NO_SELECTED;
+	
+	FloatControl[] controlBgm, controlSe;
 
 	public Sound() {
 
 		bgm = new Clip[BGM_NUMBER];
 		se = new Clip[SE_NUMBER];
+		
+		controlBgm = new FloatControl[BGM_NUMBER];
+		controlSe = new FloatControl[SE_NUMBER];
 
 		while (bgm_num < BGM_NUMBER) {
 			File f1 = new File(FilePath.bgmDirPath + "bgm" + bgm_num + ".wav");
@@ -34,6 +44,8 @@ public class Sound implements LineListener {
 				bgm[bgm_num].addLineListener(this);
 				// オーディオストリームをクリップとして開く
 				bgm[bgm_num].open(streamBgm);
+				// コントロールを取得
+				controlBgm[bgm_num] = (FloatControl)bgm[bgm_num].getControl(FloatControl.Type.MASTER_GAIN);
 				// ストリームを閉じる
 				streamBgm.close();
 			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
@@ -58,6 +70,8 @@ public class Sound implements LineListener {
 				se[se_num].addLineListener(this);
 				// オーディオストリームをクリップとして開く
 				se[se_num].open(streamSe);
+				// コントロールを取得
+				controlSe[se_num] = (FloatControl)se[se_num].getControl(FloatControl.Type.MASTER_GAIN);
 				// ストリームを閉じる
 				streamSe.close();
 			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
@@ -69,26 +83,24 @@ public class Sound implements LineListener {
 
 	}
 
-//	public void bgmRun(int num) {
-//	}
-//	
-//	public void bgmStop(int num) {
-//	}
-//
-//	public void seRun(int num) {
-//	}
 	public void bgmRun(int num) {
 		System.out.println(bgm[num].getFrameLength());
-		bgm[num].setLoopPoints(509740, 1776924);
-		bgm[num].loop(Clip.LOOP_CONTINUOUSLY);
+		nowBgm = num;
+		bgm[nowBgm].setLoopPoints(509740, 1776924);
+		bgm[nowBgm].loop(Clip.LOOP_CONTINUOUSLY);
 	}
 	
-	public void bgmStop(int num) {
-		bgm[num].stop();
+	public void bgmStop() {
+		if (nowBgm != SOUND_NO_SELECTED) {
+			bgm[nowBgm].stop();
+			nowBgm = SOUND_NO_SELECTED;
+		}
 	}
 
 	public void seRun(int num) {
-		se[num].start();
+		nowSe = num;
+		se[nowSe].start();
+		nowSe = SOUND_NO_SELECTED;
 	}
 
 	@Override
@@ -98,6 +110,26 @@ public class Sound implements LineListener {
 			Clip clip = (Clip) event.getSource();
 			clip.stop();
 			clip.setFramePosition(0); // 再生位置を最初に戻す
+		}
+	}
+	
+	/**
+	 * BGMの音量を調整
+	 * @param volumeScale 設定する音量のスケール(0~100)
+	 */
+	public void setVolumeBgm(double volumeScale) {
+		for (int i=0; i<BGM_NUMBER; i++) {
+			controlBgm[i].setValue((float)Math.log10(volumeScale)*2);
+		}
+	}
+	
+	/**
+	 * 効果音の音量を調整
+	 * @param volumeScale 設定する音量のスケール(0~100)
+	 */
+	public void setVolumeSe(double volumeScale) {
+		for (int i=0; i<SE_NUMBER; i++) {
+			controlSe[i].setValue((float)Math.log10(volumeScale)*2);
 		}
 	}
 }

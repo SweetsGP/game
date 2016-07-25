@@ -13,6 +13,7 @@ import gamesystem.CharaMessage;
 import gamesystem.HasMonsterDetailPanel;
 import gamesystem.ItemDetailPanel;
 import gamesystem.MainFrame;
+import gamesystem.SettingsPanel;
 import gamesystem.TitlePanel;
 
 /**
@@ -51,7 +52,7 @@ public class PanelController {
 	
 	// 管理するパネル
 	private static TitlePanel tp;
-//	private SettingsPanel sp;
+	private SettingsPanel sp;
 	private static Battlemain bp;
 	public static map_main mp;  // 特例措置
 	private static CharaMessage cmep;
@@ -63,12 +64,12 @@ public class PanelController {
 	 * 管理するパネルのインスタンスを生成
 	 * @param mf メインフレーム
 	 */
-	public PanelController(MainFrame mf) {
+	public PanelController(MainFrame mf, Sound s) {
 		container = mf.getContentPane();
 		
 		// パネルのインスタンス化
 		this.tp = new TitlePanel(mf, this);
-//		this.sp = new SettingsPanel(this);
+		this.sp = new SettingsPanel(this, s);
 		this.bp = new Battlemain(this);
 		this.mp = new map_main(this);
 		this.cmep = new CharaMessage();
@@ -87,7 +88,7 @@ public class PanelController {
 		case TITLE:
 			return tp;
 		case SETTINGS:
-			return null; //return sp;
+			return sp;
 		case BATTLE:
 			return bp;
 		case MAP:
@@ -109,8 +110,8 @@ public class PanelController {
 	 * @param mf メインフレーム
 	 * @throws IOException 
 	 */
-	public static void init(MainFrame mf) {
-		PanelController controller = new PanelController(mf);
+	public static void init(MainFrame mf, Sound s) {
+		PanelController controller = new PanelController(mf, s);
 		controller.showTitlePanel();
 	}
 	
@@ -157,13 +158,14 @@ public class PanelController {
 		showPanel(tp);
 	}
 	
-//	/**
-//	 * 設定画面へ遷移
-//	 */
-//	public void showSettingsPanel() {
-//		state = STATE_SETTINGS;
-//		showPanel(sp);
-//	}
+	/**
+	 * 設定画面へ遷移
+	 */
+	public void showSettingsPanel() {
+		state = STATE_SETTINGS;
+		showPanel(sp);
+		sp.showSettings();
+	}
 	
 	/**
 	 * バトル画面へ遷移

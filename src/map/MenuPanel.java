@@ -14,10 +14,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import Battle.Battlemain;
 import gamesystem.HasItemsPanel;
 import gamesystem.HasMonstersPanel;
 import gamesystem.MenuEvent;
 import gamesystem.ProductsListPanel;
+import gamesystem.SettingsPanel;
 import main.Env;
 import main.Main;
 import main.PanelController;
@@ -69,6 +71,7 @@ public class MenuPanel extends JPanel implements KeyListener {
 	
 	HasMonstersPanel hasMonstersPanel;
 	HasItemsPanel hasItemsPanel;
+	
 	ProductsListPanel productsListPanel;
 	
 	public MenuPanel(PanelController c, HasMonstersPanel hmp, HasItemsPanel hip, ProductsListPanel plp) {
@@ -382,7 +385,13 @@ public class MenuPanel extends JPanel implements KeyListener {
 			break;
 
 		case MENU_ITEM_D:  // せってい
-			// TODO: ゲーム設定処理
+			SettingsPanel sp;
+			
+			System.out.println("in");
+			controller.showSettingsPanel();
+			sp = (SettingsPanel )controller.getPanelInstance(PanelController.SETTINGS);
+			sp.loop();
+			System.out.println("out");
 			break;
 			
 		case MENU_ITEM_E:  // レポートを書く

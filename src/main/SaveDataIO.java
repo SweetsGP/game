@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.swing.JOptionPane;
+
 import gamesystem.CharaStatus;
 
 /**
@@ -72,5 +74,15 @@ public class SaveDataIO {
 		}
 		
 		output.closeEncryptFileStream();
+	}
+	
+	/**
+	 * セーブデータを削除する
+	 */
+	public static void deleteSaveData() {
+		if (saveData.delete()) {
+			JOptionPane.showMessageDialog(null, "セーブデータを消去しました",
+					Main.GAME_TITLE, JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
