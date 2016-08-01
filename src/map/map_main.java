@@ -194,7 +194,7 @@ public class map_main extends JPanel implements KeyListener{
 					map_change = 1;
 					status = 1;
 					mes_key = 2;
-					this.clear();
+					//this.clear();
 
 					p.getGraphics();
 
@@ -284,10 +284,6 @@ public class map_main extends JPanel implements KeyListener{
 					key_state = 0;
 				}else if(key_state == 6){	//Battle 
 					key_state = 0;
-					//this.clear();
-//					status = 3;
-//					button1.setVisible(false);
-//					p.setVisible(false);
 					//not developed yet
 				}else if(key_state == 7){	//SPACE action (Menu)
 					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
@@ -394,13 +390,6 @@ public class map_main extends JPanel implements KeyListener{
 		}
 		/* no reach */
 		return 1;
-	}
-
-	public void clear(){
-		Graphics g=getGraphics();		// Graphics を取り出して、
-		g.setColor(Color.white);	// 描画色を背景色にして、
-		g.fillRect(0,0,800,620);	// その大きさの矩形を塗りつぶす。
-		g.dispose();			// Graphics を破棄する。
 	}
 
 	public void hide_panel(JPanel hide){
