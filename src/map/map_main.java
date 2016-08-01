@@ -41,7 +41,7 @@ public class map_main extends JPanel implements KeyListener{
 	JButton button1;
 	Point b_point;
 	ImageIcon icon;
-	
+
 	public Battlemain bp_map;
 
 	static int key_state = 0;
@@ -66,7 +66,7 @@ public class map_main extends JPanel implements KeyListener{
 
 	npc npcObjects[];
 	Thread t[];
-	
+
 	NpcLoader testNpc;
 
 	// メニュー
@@ -85,7 +85,7 @@ public class map_main extends JPanel implements KeyListener{
 		/* map creating (init)*/
 		this.setSize(800,620);
 		this.setLayout(null);
-		
+
 		this.setFocusable(true);
 
 		p = create_map();
@@ -120,7 +120,7 @@ public class map_main extends JPanel implements KeyListener{
 		// 所持アイテム一覧表示パネル
 		hasItemsPanel = new HasItemsPanel(controller);
 		hasItemsPanel.setLocation(180, 50);
-		
+
 		// 商品一覧表示パネル
 		productsListPanel = new ProductsListPanel(controller);
 		productsListPanel.setLocation(180, 50);
@@ -162,7 +162,7 @@ public class map_main extends JPanel implements KeyListener{
 				key_state = 0;
 
 				message();
-				
+
 				for(int i = 0 ; i < 2 ; i++){
 					if(Objects.equals(npcObjects[i], null)) {
 						npcObjects[i] = null;
@@ -170,7 +170,7 @@ public class map_main extends JPanel implements KeyListener{
 
 					npcObjects[i] = new npc(i);
 					npc_units++;
-					
+
 					// test code
 					if (i == 1) {
 						testNpc = new NpcLoader("Merchant");
@@ -181,7 +181,7 @@ public class map_main extends JPanel implements KeyListener{
 					t[i].start();
 				}
 			}
-			
+
 			/* object moving treatment */
 			while(true){
 				if (Main.exitFlag != Main.RUNNING || exitMapLoopFlag != RUNNING_MAP_LOOP) {
@@ -192,11 +192,9 @@ public class map_main extends JPanel implements KeyListener{
 					map_change = 1;
 					status = 1;
 					mes_key = 2;
-					this.clear();
 
 					p.getGraphics();
 
-					message();
 					move_button(1);
 
 					this.add(p);
@@ -216,11 +214,11 @@ public class map_main extends JPanel implements KeyListener{
 					if(encounter >= md.Max_enc ){
 						action_key = -1;
 						message();
-						
+
 						status = 3;
 						button1.setVisible(false);
 						p.setVisible(false);
-						
+
 						s.bgmStop(0);
 						//not developed yet
 						controller.showBattlemainPanel();
@@ -230,7 +228,7 @@ public class map_main extends JPanel implements KeyListener{
 						p.setVisible(true);
 						button1.setVisible(true);
 						this.requestFocus(true);
-						
+
 						s.bgmRun(0);
 
 						status = 0;
@@ -280,13 +278,8 @@ public class map_main extends JPanel implements KeyListener{
 					action();
 					status = 0;
 					key_state = 0;
-				}else if(key_state == 6){	//Battle 
+				}else if(key_state == 6){	
 					key_state = 0;
-					//this.clear();
-//					status = 3;
-//					button1.setVisible(false);
-//					p.setVisible(false);
-					//not developed yet
 				}else if(key_state == 7){	//SPACE action (Menu)
 					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
 					pushSpaceKey();
@@ -309,7 +302,7 @@ public class map_main extends JPanel implements KeyListener{
 		p.setVisible(false);
 		this.setVisible(false);
 	}
-	
+
 	public void pushSpaceKey() {
 		status = 2;
 		button1.setVisible(false);
@@ -394,66 +387,62 @@ public class map_main extends JPanel implements KeyListener{
 		return 1;
 	}
 
-	public void clear(){
-		Graphics g=getGraphics();		// Graphics を取り出して、
-		g.setColor(Color.white);	// 描画色を背景色にして、
-		g.fillRect(0,0,800,620);	// その大きさの矩形を塗りつぶす。
-		g.dispose();			// Graphics を破棄する。
-	}
-
 	public void hide_panel(JPanel hide){
-//		hide.setFocusable(false);
 		hide.setEnabled(false);
 		hide.setVisible(false);
 	}
 
 	public void emerge_panel(JPanel emerge){
-//		emerge.setFocusable(true);
 		emerge.setEnabled(true);
 		emerge.setVisible(true);
 	}
 
 	public void motion(int vector){
 		int i = vector;
-		int move_stop = 50;
+		int move_stop = 25;
 		int rand = (int)(Math.random() * 5);
 		try{
-			if(i == 1){
+			switch(i){
+			case 1:
 				while(move_stop != 0 ){
-					button1.setBounds(x, y - 1, 25, 25);
+					y = y - 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					y = y - 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(10);
 				}
 				a--;
-			}else if(i == 2){
+				break;
+			case 2:
 				while(move_stop != 0 ){
-					button1.setBounds(x, y + 1, 25, 25);
+					y = y + 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					y = y + 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(10);
 				}
 				a++;
-			}else if(i == 3){
+				break;
+			case 3:
 				while(move_stop != 0 ){
-					button1.setBounds(x - 1, y, 25, 25);
+					x = x - 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					x = x - 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(10);
 				}
 				b--;
-			}else if(i == 4){
+				break;
+			case 4:
 				while(move_stop != 0 ){
-					button1.setBounds(x + 1, y, 25, 25);
+					x = x + 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					x = x + 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(10);
 				}
 				b++;
+				break;
 			}
 			b_point = button1.getLocation();
 			if(a == 11 && b == 0){}else{
@@ -637,17 +626,14 @@ public class map_main extends JPanel implements KeyListener{
 	public void map_to_map(){
 
 		button1.setVisible(false);
-		emerge_panel(message_board);
 		key_state = 0;
 
 		try{
-			message_board.setMessage("Please wait");
 			key_state = 0;
-			Thread.sleep(2000);
+			Thread.sleep(100);
 		}catch(Exception e){} 
 
 		key_state = 0;
-		hide_panel(message_board);
 
 		key_state = 0;
 		button1.setVisible(true);
@@ -665,9 +651,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][1] == b && a - npc_ex[i][0] == 1){
-						action_key = 1;
-						npc_tlk = i;
-						break;
+					action_key = 1;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -678,9 +664,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][1] == b  && npc_ex[i][0] - a == 1){
-						action_key = 2;
-						npc_tlk = i;
-						break;
+					action_key = 2;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -691,9 +677,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][0] == a && b - npc_ex[i][1]  == 1){
-						action_key = 3;
-						npc_tlk = i;
-						break;
+					action_key = 3;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -704,9 +690,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][0] == a && npc_ex[i][1] - b == 1){
-						action_key = 4;
-						npc_tlk = i;
-						break;
+					action_key = 4;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}

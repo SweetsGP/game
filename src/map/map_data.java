@@ -38,11 +38,11 @@ public class map_data{
 	
 	/*enemy data*/
 	
-	public int mp1_enemy = 1;
+	public int mp1_enemy = 1;	//databese
 	
-	public int mp2_enemy = 1;
+	public int mp2_enemy = 1;	//database
 	
-	/*message data*/
+	/*message data*/	//databese
 	public int[] message_long = {0,4,2};
 	
 	public int[] action_long = {0,3,2};
