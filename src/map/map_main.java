@@ -194,7 +194,6 @@ public class map_main extends JPanel implements KeyListener{
 					map_change = 1;
 					status = 1;
 					mes_key = 2;
-					//this.clear();
 
 					p.getGraphics();
 
@@ -224,7 +223,6 @@ public class map_main extends JPanel implements KeyListener{
 						p.setVisible(false);
 						
 						s.bgmStop();
-						//not developed yet
 						controller.showBattlemainPanel();
 						bp_map = (Battlemain )controller.getPanelInstance(PanelController.BATTLE);
 						bp_map.loop(s);
@@ -393,58 +391,61 @@ public class map_main extends JPanel implements KeyListener{
 	}
 
 	public void hide_panel(JPanel hide){
-//		hide.setFocusable(false);
 		hide.setEnabled(false);
 		hide.setVisible(false);
 	}
 
 	public void emerge_panel(JPanel emerge){
-//		emerge.setFocusable(true);
 		emerge.setEnabled(true);
 		emerge.setVisible(true);
 	}
 
 	public void motion(int vector){
 		int i = vector;
-		int move_stop = 50;
+		int move_stop = 25;
 		int rand = (int)(Math.random() * 5);
 		try{
-			if(i == 1){
+			switch(i){
+			case 1:
 				while(move_stop != 0 ){
-					button1.setBounds(x, y - 1, 25, 25);
+					y = y - 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					y = y - 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				a--;
-			}else if(i == 2){
+				break;
+			case 2:
 				while(move_stop != 0 ){
-					button1.setBounds(x, y + 1, 25, 25);
+					y = y + 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					y = y + 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				a++;
-			}else if(i == 3){
+				break;
+			case 3:
 				while(move_stop != 0 ){
-					button1.setBounds(x - 1, y, 25, 25);
+					x = x - 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					x = x - 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				b--;
-			}else if(i == 4){
+				break;
+			case 4:
 				while(move_stop != 0 ){
-					button1.setBounds(x + 1, y, 25, 25);
+					x = x + 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					x = x + 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				b++;
+				break;
 			}
 			b_point = button1.getLocation();
 			if(a == 11 && b == 0){}else{
