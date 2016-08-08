@@ -38,7 +38,7 @@ public class map_main extends JPanel implements KeyListener{
 
 	JPanel p,p2;
 	MessageBoard message_board;
-	JButton button1;
+	JLabel button1;
 	Point b_point;
 	ImageIcon icon;
 	
@@ -360,8 +360,8 @@ public class map_main extends JPanel implements KeyListener{
 		return p;
 	}
 
-	public JButton create_button(int change){
-		JButton button1 = new JButton(new ImageIcon(FilePath.mapDirPath + "down.png"));
+	public JLabel create_button(int change){
+		JLabel button1 = new JLabel(new ImageIcon(FilePath.mapDirPath + "down.png"));
 		if(change == 0){
 			button1.setBounds(12, 12, 25, 25);
 		}else{
