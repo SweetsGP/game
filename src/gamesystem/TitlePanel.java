@@ -94,7 +94,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 		btnNew.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				setCursor(ACTION_NEW_GAME);
-				controller.showCharaMessagePanel();
+				controller.showCharacterMakingPanel();
 				exitTitleLoopFlag = EXIT_TITLE_LOOP;
 				deleteCursor(ACTION_NEW_GAME);
 			}

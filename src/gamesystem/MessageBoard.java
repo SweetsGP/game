@@ -2,10 +2,16 @@ package gamesystem;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
+import main.FilePath;
 
 public class MessageBoard extends JPanel {
 	private static final int DEFAULT_WIDTH = 600;
@@ -13,6 +19,9 @@ public class MessageBoard extends JPanel {
 	
 	private int width = DEFAULT_WIDTH;
 	private int height = DEFAULT_HEIGHT;
+	
+	BufferedReader buf = null;
+	private boolean isOpened = false;
 	
 	JLabel messageTextArea;
 	
@@ -75,6 +84,65 @@ public class MessageBoard extends JPanel {
 	public void showMessage(String msg) {
 		setMessage(msg);
 		this.setVisible(true);
+	}
+	
+	/**
+	 * 外部のテキストファイルに書き込まれているメッセージを読み込んで出力します．
+	 * ただし，改行コードが途中で存在する場合は，その直前までのメッセージを出力します．
+	 * 以降，このメソッドをコールするごとに1行ずつ出力します．この場合，引数にはnullを指定してください．
+	 * 出力途中のテキストファイルが存在する状態で別のテキストファイルを引数で指定した場合，
+	 * 出力途中のテキストファイルはクローズされ，それに関する情報は破棄されます．
+	 * @param filePath 表示したいメッセージが書き込まれたテキストファイルのパス or null
+	 * @return ファイルがクローズされた状態で終了 -> true / それ以外 -> false
+	 */
+	public boolean showMessageTextFile(String filePath) {
+		String lineMsg;
+		
+		// 引数チェック
+		// 引数ありの場合
+		if (filePath != null) {
+			// オープン済みのファイルが存在する場合はクローズする
+			if (isOpened) {
+				try {
+					buf.close();
+//					isOpened = false;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			// ファイルオープン
+			try{
+				buf = new BufferedReader(new FileReader(filePath));
+				isOpened = true;
+			}catch(FileNotFoundException e){
+				e.printStackTrace();
+			}
+			
+		} else {
+			// 引数がnullの場合 -> ファイルオープン済み
+			if (buf == null) {
+				return true;
+			}
+		}
+		
+		// メッセージ読み込み
+		try {
+			if ((lineMsg = buf.readLine()) != null) {
+				showMessage(lineMsg);
+			} else {
+				try {
+					buf.close();
+					isOpened = false;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return !isOpened;
 	}
 	
 	/**
