@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import map.map_main;
 
 import Battle.Battlemain;
-import gamesystem.CharaMessage;
+import gamesystem.CharacterMakingPanel;
 import gamesystem.HasMonsterDetailPanel;
 import gamesystem.ItemDetailPanel;
 import gamesystem.MainFrame;
@@ -31,7 +31,7 @@ public class PanelController {
 	public static final int SETTINGS = 1;  // 設定画面
 	public static final int BATTLE = 2;  // バトル画面
 	public static final int MAP = 3;  // マップ画面
-	public static final int CHARA_MESSAGE = 4;  // キャラメイク画面
+	public static final int CHARACTER_MAKING = 4;  // キャラメイク画面
 	public static final int HAS_MONSTER_DETAIL = 5; // てもちモンスターの詳細情報画面
 	public static final int ITEM_DETAIL = 6; // アイテムの詳細情報画面
 	
@@ -40,7 +40,7 @@ public class PanelController {
 	public static final int STATE_SETTINGS = 1;  // 設定
 	public static final int STATE_BATTLE = 2;  // バトル
 	public static final int STATE_MAP = 3;  // マップ
-	public static final int STATE_CHARA_MESSAGE = 4;  // キャラメイク
+	public static final int STATE_CHARACTER_MAKING = 4;  // キャラメイク
 //	public static final int STATE_HAS_MONSTER_DETAIL = 5; // てもちモンスターの詳細情報画面
 //	public static final int STATE_ITEM_DETAIL = 6; // アイテムの詳細情報画面
 	
@@ -55,7 +55,8 @@ public class PanelController {
 	private SettingsPanel sp;
 	private static Battlemain bp;
 	public static map_main mp;  // 特例措置
-	private static CharaMessage cmep;
+	private static CharacterMakingPanel cmp;
+//	private static CharaMessage cmp;
 	private HasMonsterDetailPanel hmdp;
 	private ItemDetailPanel idp;
 	
@@ -72,7 +73,8 @@ public class PanelController {
 		this.sp = new SettingsPanel(this, s);
 		this.bp = new Battlemain(this);
 		this.mp = new map_main(this);
-		this.cmep = new CharaMessage();
+//		this.cmp = new CharaMessage();
+		this.cmp = new CharacterMakingPanel(this);
 		this.hmdp = new HasMonsterDetailPanel(this);
 		this.idp = new ItemDetailPanel(this);
 		
@@ -93,8 +95,8 @@ public class PanelController {
 			return bp;
 		case MAP:
 			return mp;
-		case CHARA_MESSAGE:
-			return cmep;
+		case CHARACTER_MAKING:
+			return cmp;
 		case HAS_MONSTER_DETAIL:
 			return hmdp;
 		case ITEM_DETAIL:
@@ -125,8 +127,8 @@ public class PanelController {
 			mp.loop(s);
 		} else if (state == STATE_BATTLE) {
 			bp.loop(s);
-		} else if (state == STATE_CHARA_MESSAGE) {
-			cmep.loop();
+		} else if (state == STATE_CHARACTER_MAKING) {
+			cmp.loop();
 		}
 	}
 	
@@ -188,9 +190,10 @@ public class PanelController {
 	/**
 	 * 主人公作成画面へ遷移
 	 */
-	public void showCharaMessagePanel() {
-		state = STATE_CHARA_MESSAGE;
-		showPanel(cmep);
+	public void showCharacterMakingPanel() {
+		state = STATE_CHARACTER_MAKING;
+		showPanel(cmp);
+		cmp.showCharacterMakingPanel();
 	}
 	
 	/**

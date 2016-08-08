@@ -387,11 +387,11 @@ public class MenuPanel extends JPanel implements KeyListener {
 		case MENU_ITEM_D:  // せってい
 			SettingsPanel sp;
 			
-			System.out.println("in");
+			this.requestFocus(false);
 			controller.showSettingsPanel();
 			sp = (SettingsPanel )controller.getPanelInstance(PanelController.SETTINGS);
 			sp.loop();
-			System.out.println("out");
+			this.requestFocus(true);
 			break;
 			
 		case MENU_ITEM_E:  // レポートを書く
