@@ -181,15 +181,11 @@ public class npc extends map_main implements Runnable {
 			npc_b.setBounds(764, 564, 25, 25);
 			PanelController.mp.npc_ex[this.status][0] = 11;
 			PanelController.mp.npc_ex[this.status][1] = 15;
-			//			m.npc_ex[this.status][0] = 11;
-			//			m.npc_ex[this.status][1] = 15;
 		}else{
 			npc_b = new JButton(new ImageIcon(FilePath.mapDirPath + "npc2.png"));
 			npc_b.setBounds(764, 12, 25, 25);
 			PanelController.mp.npc_ex[this.status][0] = 0;
 			PanelController.mp.npc_ex[this.status][1] = 15;
-			//			m.npc_ex[this.status][0] = 0;
-			//			m.npc_ex[this.status][1] = 15;
 		}
 	}
 

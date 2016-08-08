@@ -246,7 +246,10 @@ public class MenuPanel extends JPanel implements KeyListener {
 				}
 				break;
 			case 6:  // X
-				// no operation
+				deleteCursor();
+				this.requestFocus(false);
+				this.setVisible(false);
+				exitMenuLoopFlag = EXIT_MENU_LOOP;
 				break;
 			case 7:  // スペースキー
 				deleteCursor();

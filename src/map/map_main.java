@@ -38,7 +38,7 @@ public class map_main extends JPanel implements KeyListener{
 
 	JPanel p,p2;
 	MessageBoard message_board;
-	JButton button1;
+	JLabel button1;
 	Point b_point;
 	ImageIcon icon;
 	
@@ -194,7 +194,6 @@ public class map_main extends JPanel implements KeyListener{
 					map_change = 1;
 					status = 1;
 					mes_key = 2;
-					this.clear();
 
 					p.getGraphics();
 
@@ -224,7 +223,6 @@ public class map_main extends JPanel implements KeyListener{
 						p.setVisible(false);
 						
 						s.bgmStop();
-						//not developed yet
 						controller.showBattlemainPanel();
 						bp_map = (Battlemain )controller.getPanelInstance(PanelController.BATTLE);
 						bp_map.loop(s);
@@ -284,10 +282,6 @@ public class map_main extends JPanel implements KeyListener{
 					key_state = 0;
 				}else if(key_state == 6){	//Battle 
 					key_state = 0;
-					//this.clear();
-//					status = 3;
-//					button1.setVisible(false);
-//					p.setVisible(false);
 					//not developed yet
 				}else if(key_state == 7){	//SPACE action (Menu)
 					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
@@ -366,8 +360,8 @@ public class map_main extends JPanel implements KeyListener{
 		return p;
 	}
 
-	public JButton create_button(int change){
-		JButton button1 = new JButton(new ImageIcon(FilePath.mapDirPath + "down.png"));
+	public JLabel create_button(int change){
+		JLabel button1 = new JLabel(new ImageIcon(FilePath.mapDirPath + "down.png"));
 		if(change == 0){
 			button1.setBounds(12, 12, 25, 25);
 		}else{
@@ -396,66 +390,62 @@ public class map_main extends JPanel implements KeyListener{
 		return 1;
 	}
 
-	public void clear(){
-		Graphics g=getGraphics();		// Graphics を取り出して、
-		g.setColor(Color.white);	// 描画色を背景色にして、
-		g.fillRect(0,0,800,620);	// その大きさの矩形を塗りつぶす。
-		g.dispose();			// Graphics を破棄する。
-	}
-
 	public void hide_panel(JPanel hide){
-//		hide.setFocusable(false);
 		hide.setEnabled(false);
 		hide.setVisible(false);
 	}
 
 	public void emerge_panel(JPanel emerge){
-//		emerge.setFocusable(true);
 		emerge.setEnabled(true);
 		emerge.setVisible(true);
 	}
 
 	public void motion(int vector){
 		int i = vector;
-		int move_stop = 50;
+		int move_stop = 25;
 		int rand = (int)(Math.random() * 5);
 		try{
-			if(i == 1){
+			switch(i){
+			case 1:
 				while(move_stop != 0 ){
-					button1.setBounds(x, y - 1, 25, 25);
+					y = y - 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					y = y - 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				a--;
-			}else if(i == 2){
+				break;
+			case 2:
 				while(move_stop != 0 ){
-					button1.setBounds(x, y + 1, 25, 25);
+					y = y + 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					y = y + 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				a++;
-			}else if(i == 3){
+				break;
+			case 3:
 				while(move_stop != 0 ){
-					button1.setBounds(x - 1, y, 25, 25);
+					x = x - 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					x = x - 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				b--;
-			}else if(i == 4){
+				break;
+			case 4:
 				while(move_stop != 0 ){
-					button1.setBounds(x + 1, y, 25, 25);
+					x = x + 2;
+					button1.setBounds(x, y, 25, 25);
 					p.repaint();
-					x = x + 1;
 					move_stop--;
-					Thread.sleep(8);
+					Thread.sleep(15);
 				}
 				b++;
+				break;
 			}
 			b_point = button1.getLocation();
 			if(a == 11 && b == 0){}else{
