@@ -37,6 +37,8 @@ public class FilePath {
 	public static final String textDirPath = baseDirPath + "text" + fs;
 	
 	// img/
+	// charaフォルダまでのパス
+	public static final String charaDirPath = imgDirPath + "chara" + fs;
 	// battleフォルダまでのパス
 	public static final String battleDirPath = imgDirPath + "battle" + fs;
 	// mapフォルダまでのパス
