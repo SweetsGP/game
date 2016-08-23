@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import map.map_main;
 
 import Battle.Battlemain;
+import gamesystem.CharacterCreatingPanel;
 import gamesystem.CharacterMakingPanel;
 import gamesystem.HasMonsterDetailPanel;
 import gamesystem.ItemDetailPanel;
@@ -41,8 +42,6 @@ public class PanelController {
 	public static final int STATE_BATTLE = 2;  // バトル
 	public static final int STATE_MAP = 3;  // マップ
 	public static final int STATE_CHARACTER_MAKING = 4;  // キャラメイク
-//	public static final int STATE_HAS_MONSTER_DETAIL = 5; // てもちモンスターの詳細情報画面
-//	public static final int STATE_ITEM_DETAIL = 6; // アイテムの詳細情報画面
 	
 	// 遷移状態
 	public static int state = STATE_TITLE;
@@ -55,8 +54,8 @@ public class PanelController {
 	private SettingsPanel sp;
 	private static Battlemain bp;
 	public static map_main mp;  // 特例措置
-	private static CharacterMakingPanel cmp;
-//	private static CharaMessage cmp;
+//	private static CharacterMakingPanel cmp;
+	private static CharacterCreatingPanel cmp;
 	private HasMonsterDetailPanel hmdp;
 	private ItemDetailPanel idp;
 	
@@ -73,8 +72,8 @@ public class PanelController {
 		this.sp = new SettingsPanel(this, s);
 		this.bp = new Battlemain(this);
 		this.mp = new map_main(this);
-//		this.cmp = new CharaMessage();
-		this.cmp = new CharacterMakingPanel(this);
+//		this.cmp = new CharacterMakingPanel(this);
+		this.cmp = new CharacterCreatingPanel(this);
 		this.hmdp = new HasMonsterDetailPanel(this);
 		this.idp = new ItemDetailPanel(this);
 		
@@ -193,14 +192,14 @@ public class PanelController {
 	public void showCharacterMakingPanel() {
 		state = STATE_CHARACTER_MAKING;
 		showPanel(cmp);
-		cmp.showCharacterMakingPanel();
+//		cmp.showCharacterMakingPanel();
+		cmp.showPanel();
 	}
 	
 	/**
 	 * てもちモンスターの詳細情報画面へ遷移
 	 */
 	public void showHasMonsterDetailPanel(HashMap<String, String> hasMonsterInfo) {
-//		state = STATE_HAS_MONSTER_DETAIL;
 		showPanel(hmdp);
 		hmdp.showDetailOfHasMonster(hasMonsterInfo);
 	}
@@ -209,7 +208,6 @@ public class PanelController {
 	 * アイテムの詳細情報画面へ遷移
 	 */
 	public void showItemDetailPanel(HashMap<String, String> itemInfo) {
-//		state = STATE_ITEM_DETAIL;
 		showPanel(idp);
 		idp.showDetailOfItem(itemInfo);
 	}
