@@ -75,7 +75,7 @@ public class CharacterCreatingPanel extends BasePanel {
 		txtfName.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				keyState = KEY_ENTER_ON_TXTFIELD;  // Enterキー
+				mKeyState = KEY_ENTER_ON_TXTFIELD;  // Enterキー
 			}
 		});
 		txtfName.setEnabled(false);
@@ -129,9 +129,9 @@ public class CharacterCreatingPanel extends BasePanel {
 				readLineCounter = 0;
 				stage = STAGE_SECOND_INTRO;
 				
-			} else if (keyState == KEY_ENTER_ON_TXTFIELD) {
+			} else if (mKeyState == KEY_ENTER_ON_TXTFIELD) {
 				// テキストフィールド内でEnter -> ok
-				keyState = KEY_NO_TYPED;
+				mKeyState = KEY_NO_TYPED;
 				btnOk.doClick();
 			}
 			break;
@@ -168,9 +168,9 @@ public class CharacterCreatingPanel extends BasePanel {
 				readLineCounter = 0;
 				stage = STAGE_READY;
 				
-			} else if (keyState == KEY_ENTER_ON_TXTFIELD) {
+			} else if (mKeyState == KEY_ENTER_ON_TXTFIELD) {
 				// テキストフィールド内でEnter -> ok
-				keyState = KEY_NO_TYPED;
+				mKeyState = KEY_NO_TYPED;
 				btnOk.doClick();
 			}
 			break;
@@ -213,7 +213,8 @@ public class CharacterCreatingPanel extends BasePanel {
 			if (stage == STAGE_READY) {
 				// マップ画面に遷移
 				mController.showMapPanel();
-				loopState = LOOP_EXIT;
+//				mLoopState = LOOP_EXIT;
+				stop();
 			} else {
 				stage++;  // 次のステージへ
 			}

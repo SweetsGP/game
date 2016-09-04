@@ -1,9 +1,14 @@
 package main;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Objects;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 public class BasePanel extends JPanel implements KeyListener {
 	// 定数
@@ -23,6 +28,12 @@ public class BasePanel extends JPanel implements KeyListener {
 	public static final int KEY_Z = 5;
 	public static final int KEY_X = 6;
 	public static final int KEY_SPACE = 7;
+	// カーソル位置
+	public static final int CURSOR_UNLOC = -1;
+	private int CURSOR_LOC_MAX = 0;
+	// カーソル移動方向
+	public static final boolean CURSOR_INDEX_PLUS = true;
+	public static final boolean CURSOR_INDEX_MINUS = false;
 	
 	// 変数
 	protected PanelController mController;
@@ -35,8 +46,15 @@ public class BasePanel extends JPanel implements KeyListener {
 	protected int mPriority;
 	// ~~~~~~
 	
-	protected static boolean loopState;
-	protected static int keyState;
+	// ループ処理状態
+	protected boolean mLoopState;
+	// キー入力状態
+	protected int mKeyState;
+	
+	// カーソル操作対象コンポーネント格納用配列
+	protected ArrayList<JButton> mCursorArr;
+	// カーソル位置
+	protected int mCursorLoc;
 	
 	// ==================================================
 	//  コンストラクタ
@@ -52,8 +70,11 @@ public class BasePanel extends JPanel implements KeyListener {
 		this.mController = controller;
 		this.mPriority = PRIORITY_UNDEF;
 		
-		keyState = KEY_NO_TYPED;
-		loopState = LOOP_EXIT;
+		this.mKeyState = KEY_NO_TYPED;
+		this.mLoopState = LOOP_EXIT;
+		
+		this.mCursorArr = null;
+		this.mCursorLoc = CURSOR_UNLOC;
 		
 		this.setLayout(null);
 		this.setSize(PanelController.PANEL_WIDTH, PanelController.PANEL_HEIGHT);
@@ -130,21 +151,21 @@ public class BasePanel extends JPanel implements KeyListener {
 	 * 入力待機，処理ループ
 	 */
 	public void loop() {
-		keyState = KEY_NO_TYPED;
-		loopState = LOOP_RUNNING;
+		this.mKeyState = KEY_NO_TYPED;
+		this.mLoopState = LOOP_RUNNING;
 		
 		while(true) {
 //			if (loopState != LOOP_RUNNING) {
 //				// TODO: priorityに応じたループ停止処理(今回，未実装部分)
 //				break;
 //			}
-			if (loopState != LOOP_RUNNING || Main.exitFlag != Main.RUNNING) {
+			if (this.mLoopState != LOOP_RUNNING || Main.exitFlag != Main.RUNNING) {
 				break;
 			}
 			
 			this.periodicOpBeforeInput();
 			
-			switch(keyState) {
+			switch(this.mKeyState) {
 			case KEY_UP:
 				this.onPressKeyUp();
 				break;
@@ -176,7 +197,7 @@ public class BasePanel extends JPanel implements KeyListener {
 			default:
 				break;
 			}
-			keyState = KEY_NO_TYPED;
+			this.mKeyState = KEY_NO_TYPED;
 			
 			this.periodicOpAfterInput();
 			
@@ -193,7 +214,7 @@ public class BasePanel extends JPanel implements KeyListener {
 	 * ループ停止処理
 	 */
 	public void stop() {
-		loopState = LOOP_EXIT;
+		this.mLoopState = LOOP_EXIT;
 	}
 	
 	/**
@@ -202,7 +223,7 @@ public class BasePanel extends JPanel implements KeyListener {
 	 */
 	public void stop(int priority) {
 		if (this.mPriority > priority || this.mPriority == PRIORITY_UNDEF) {
-			loopState = LOOP_EXIT;
+			this.mLoopState = LOOP_EXIT;
 		}
 	}
 	
@@ -272,6 +293,90 @@ public class BasePanel extends JPanel implements KeyListener {
 	protected void periodicOpAfterInput() {
 		this.repaint();
 	}
+	
+	// ==================================================
+	//  カーソル操作
+	// ==================================================
+	/**
+	 * カーソル操作の対象となるコンポーネント(ボタン)を追加します
+	 * (追加した(本メソッドを呼び出した)順にカーソルが移動することになります)
+	 * @param btn カーソル操作の対象にしたいボタン
+	 */
+	protected void addToCursorArr(JButton btn) {
+		if (Objects.equals(this.mCursorArr, null)) {
+			this.mCursorArr = new ArrayList<JButton>();
+		}
+		
+		this.mCursorArr.add(btn);
+		this.CURSOR_LOC_MAX++;
+	}
+	
+	/**
+	 * 表示中のカーソルを非表示にします
+	 */
+	protected void deleteCursor() {
+		JButton btn;
+		
+		if (this.mCursorLoc != CURSOR_UNLOC) {
+			btn = this.mCursorArr.get(this.mCursorLoc);
+			btn.setBorderPainted(false);
+		}
+		
+		this.repaint();
+	}
+	
+	/**
+	 * 引数で与えられた位置のコンポーネントにカーソルを表示します
+	 * @param cursor 位置
+	 */
+	protected void showCursor(int cursor) {
+		JButton btn;
+		
+		this.mCursorLoc = cursor;
+		btn = this.mCursorArr.get(this.mCursorLoc);
+		btn.setBorderPainted(true);
+		btn.setBorder(new LineBorder(Color.white, 2, true));
+		
+		this.repaint();
+	}
+	
+	/**
+	 * 与えられた方向にカーソルを1だけ移動します
+	 * @param direction 
+	 *   CURSOR_INDEX_PLUS  -> カーソル操作対象コンポーネント格納用の配列において，インデックスがプラスとなる向き
+	 *     (後に追加したコンポーネントにカーソルが向かう)
+	 *   CURSOR_INDEX_MINUS -> 同様に，インデックスがマイナスとなる向き(先に追加したコンポーネントにカーソルが向かう)
+	 */
+	protected void moveCursor(boolean direction) {
+		this.deleteCursor();
+		
+		if (direction == CURSOR_INDEX_PLUS) {
+			if (this.mCursorLoc < this.CURSOR_LOC_MAX - 1) {
+				this.mCursorLoc++;
+			}
+		} else {
+			if (this.mCursorLoc > 0) {
+				this.mCursorLoc--;
+			}
+		}
+		
+		if (this.mCursorLoc != CURSOR_UNLOC) {
+			this.showCursor(this.mCursorLoc);
+		}
+	}
+	
+	/**
+	 * 現在，カーソルがあるコンポーネント(ボタン)をクリックします
+	 */
+	protected void clickOnCursor() {
+		JButton btn;
+		
+		if (this.mCursorLoc != CURSOR_UNLOC) {
+			btn = this.mCursorArr.get(this.mCursorLoc);
+			btn.doClick();
+		}
+		
+	}
 
 	// ==================================================
 	//  キーリスナー
@@ -288,25 +393,25 @@ public class BasePanel extends JPanel implements KeyListener {
 		key = e.getKeyCode();
 		switch(key){
 		case KeyEvent.VK_UP:
-			keyState = KEY_UP;
+			this.mKeyState = KEY_UP;
 			break;
 		case KeyEvent.VK_DOWN:
-			keyState = KEY_DOWN;
+			this.mKeyState = KEY_DOWN;
 			break;
 		case KeyEvent.VK_LEFT:
-			keyState = KEY_LEFT;
+			this.mKeyState = KEY_LEFT;
 			break;
 		case KeyEvent.VK_RIGHT:
-			keyState = KEY_RIGHT;
+			this.mKeyState = KEY_RIGHT;
 			break;
 		case KeyEvent.VK_Z:
-			keyState = KEY_Z;
+			this.mKeyState = KEY_Z;
 			break;
 		case KeyEvent.VK_X:
-			keyState = KEY_X;
+			this.mKeyState = KEY_X;
 			break;
 		case KeyEvent.VK_SPACE:
-			keyState = KEY_SPACE;
+			this.mKeyState = KEY_SPACE;
 			break;
 		case KeyEvent.VK_TAB:
 			// tabキーによるフォーカス移動を防止
