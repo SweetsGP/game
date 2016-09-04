@@ -4,7 +4,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -20,18 +19,18 @@ import main.Main;
  */
 public class MainFrame extends JFrame implements ComponentListener {
 	public static final int WINDOW_WIDTH = 800;
-	public static final int WINDOW_HEIGHT = 620;
+	public static final int WINDOW_HEIGHT = 600;
 
 	/**
 	 * コンストラクタ
-	 * @param title ウィンドウタイトルに表示する文字列 
+	 * @param title ウィンドウタイトルに表示する文字列
 	 */
 	public MainFrame(String title) {
 		setTitle(title);
 		setBounds(100, 100, WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				int exitConfirmAns = JOptionPane.showConfirmDialog(null,
@@ -43,7 +42,7 @@ public class MainFrame extends JFrame implements ComponentListener {
 				}
 			}
 		});
-		
+
 	}
 
 	@Override

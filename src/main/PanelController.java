@@ -10,7 +10,6 @@ import map.map_main;
 
 import Battle.Battlemain;
 import gamesystem.CharacterCreatingPanel;
-import gamesystem.CharacterMakingPanel;
 import gamesystem.HasMonsterDetailPanel;
 import gamesystem.ItemDetailPanel;
 import gamesystem.MainFrame;
@@ -121,7 +120,8 @@ public class PanelController {
 	 */
 	public static void loop(Sound s) {
 		if (state == STATE_TITLE) {
-			tp.loop(s);
+//			tp.loop(s);
+			tp.loop();
 		} else if (state == STATE_MAP) {
 			mp.loop(s);
 		} else if (state == STATE_BATTLE) {
