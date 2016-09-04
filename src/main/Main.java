@@ -1,14 +1,14 @@
 package main;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.awt.Dimension;
 //import java.util.ArrayList;
 //import java.util.Enumeration;
 //import java.util.Hashtable;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
@@ -21,7 +21,7 @@ public class Main {
 	public static final int RUNNING = 0;
 	public static final int EXIT_OK = 1;
 	public static final int EXIT_ERROR = 2;
-	
+
 	// ゲームループ終了フラグ -> EXIT_OK もしくは EXIT_ERROR で各ループを強制的に離脱
 	public static int exitFlag = RUNNING;
 
@@ -32,7 +32,7 @@ public class Main {
 	 * JRE1.7以上でない場合はエラーメッセージを出して終了
 	 */
 	private void checkJavaVer() {
-		final boolean isNgJava = 
+		final boolean isNgJava =
 				(Double.parseDouble(System.getProperty("java.specification.version")) < 1.7);
 		if (isNgJava) {
 			JOptionPane.showMessageDialog(null, "Your Java version (JRE"
@@ -50,11 +50,11 @@ public class Main {
 			Font mplusfont10 = Font.createFont(Font.TRUETYPE_FONT, new File( FilePath.fontDirPath
 					+ "PixelMplus_20130602" + FilePath.fs + "PixelMplus10_Regular.ttf" ));
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(mplusfont10);
-			
+
 			Font mplusfont12 = Font.createFont(Font.TRUETYPE_FONT, new File( FilePath.fontDirPath
 					+ "PixelMplus_20130602" + FilePath.fs + "PixelMplus12_Regular.ttf" ));
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(mplusfont12);
-			
+
 		} catch (FontFormatException | IOException e) {
 			JOptionPane.showMessageDialog(null, "フォントファイルの読み込みに失敗しました。",
 					GAME_TITLE, JOptionPane.ERROR_MESSAGE);
@@ -86,7 +86,7 @@ public class Main {
 
 				// データベース接続
 				DataBase.openDB();
-				
+
 				// test code(テスト用テーブル生成)
 //				try {
 //					// 手持ちモンスターテーブル(仮)
@@ -200,7 +200,7 @@ public class Main {
 //							+ "3, 'すごいキズぐすり', 200, 'kizugusuri.png', 'SugoiKizugusuri', 'HPを150だけ回復する', 3)");
 //					DataBase.wExecuteUpdate("insert into testitems values ("
 //							+ "4, '自転車のベル', 0, 'kizugusuri.png', 'BellOfBike', '自転車のベルの音がなるよ〜', 5)");
-//					
+//
 //					DataBase.wExecuteUpdate("insert into testnpcs values ("
 //							+ "1, 'まさお', '', '1, 2, 3, 4')");
 //					DataBase.wExecuteUpdate("insert into testnpcs values ("
@@ -212,8 +212,11 @@ public class Main {
 
 				// フレーム(ウィンドウ生成)
 				MainFrame mainFrame = new MainFrame(GAME_TITLE);
+				mainFrame.getContentPane().setPreferredSize(
+						new Dimension(MainFrame.WINDOW_WIDTH, MainFrame.WINDOW_HEIGHT));
+				mainFrame.pack();
 				mainFrame.setVisible(true);
-				
+
 				// サウンドインスタンス生成・初期化
 				Sound s = new Sound();
 
@@ -255,7 +258,7 @@ public class Main {
 		} finally {
 			// データベース切断
 			DataBase.closeDB();
-			
+
 			// ロックファイルのクローズ
 			pmi.close();
 		}

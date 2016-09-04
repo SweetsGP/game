@@ -1,9 +1,5 @@
 package gamesystem;
 
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -12,7 +8,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
@@ -20,10 +22,6 @@ import main.FilePath;
 import main.Main;
 import main.PanelController;
 import main.Sound;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
 
 /**
  * タイトル画面クラス
@@ -33,15 +31,15 @@ import javax.swing.JButton;
 public class TitlePanel extends JPanel implements KeyListener {
 	public static final int RUNNING_TITLE_LOOP = 0;
 	public static final int EXIT_TITLE_LOOP = 1;
-	
+
 	private static final int ACTION_NO_SELECTED = -1;
 	private static final int ACTION_NEW_GAME = 0;
 	private static final int ACTION_CONTINUE = 1;
 	private static final int ACTION_SETTINGS = 2;
 	private static final int ACTION_EXIT = 3;
-	
+
 	public static int exitTitleLoopFlag = RUNNING_TITLE_LOOP;
-	
+
 	private MainFrame mainFrame;
 	private PanelController controller;
 
@@ -49,7 +47,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 	private JLabel pTitle;
 	private JButton btnNew,btnContinue,btnSetting, btnExit;
 	private JButton btnActions[];
-	
+
 	private static int key_state = 0;
 
 	/**
@@ -73,7 +71,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 		this.setName("Title");
 		this.setLayout(null);
 		this.setSize(PanelController.PANEL_WIDTH,PanelController.PANEL_HEIGHT);
-		
+
 		this.setFocusable(true);
 		this.addKeyListener(this);
 
@@ -83,12 +81,13 @@ public class TitlePanel extends JPanel implements KeyListener {
 		pTitle.setForeground(Color.red);
 		pTitle.setBounds(100, 5, 400, 40);
 		this.add(pTitle);
-		
+
 		btnActions = new JButton[4];
 
 		btnNew = new JButton("New Game");
 		btnNew.setFont(new Font("PixelMplus10",Font.PLAIN,16));
 		btnNew.setForeground(Color.white);
+		btnNew.setContentAreaFilled(false);
 		btnNew.setBorderPainted(false);
 		btnNew.setBounds(50, 500, 150, 40);
 		btnNew.addActionListener(new ActionListener(){
@@ -106,6 +105,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 		btnContinue = new JButton("Map");
 		btnContinue.setFont(new Font("PixelMplus10",Font.PLAIN,16));
 		btnContinue.setForeground(Color.white);
+		btnContinue.setContentAreaFilled(false);
 		btnContinue.setBorderPainted(false);
 		btnContinue.setBounds(230, 500, 150, 40);
 		btnContinue.addActionListener(new ActionListener(){
@@ -129,6 +129,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 		btnSetting = new JButton("Battle");
 		btnSetting.setFont(new Font("PixelMplus10",Font.PLAIN,16));
 		btnSetting.setForeground(Color.white);
+		btnSetting.setContentAreaFilled(false);
 		btnSetting.setBorderPainted(false);
 		btnSetting.setBounds(410, 500, 150, 40);
 		btnSetting.addActionListener(new ActionListener(){
@@ -146,6 +147,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 		btnExit = new JButton("Quit");
 		btnExit.setFont(new Font("PixelMplus10",Font.PLAIN,16));
 		btnExit.setForeground(Color.white);
+		btnExit.setContentAreaFilled(false);
 		btnExit.setBorderPainted(false);
 		btnExit.setBounds(590, 500, 150, 40);
 		btnExit.addActionListener(new ActionListener(){
@@ -163,21 +165,21 @@ public class TitlePanel extends JPanel implements KeyListener {
 		this.add(btnExit);
 		btnActions[3] = btnExit;
 	}
-	
+
 	/**
 	 * 入力待機ループ
 	 */
 	public void loop(Sound s) {
 		int cursorLocation = ACTION_NO_SELECTED;
-		
+
 		exitTitleLoopFlag = RUNNING_TITLE_LOOP;
 		key_state = 0;
-		
+
 		while (true) {
 			if (Main.exitFlag != Main.RUNNING || exitTitleLoopFlag != RUNNING_TITLE_LOOP) {
 				break;
 			}
-			
+
 			// キー入力受付
 			switch (key_state) {
 			case 1:  // UP
@@ -224,7 +226,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * 与えられた番号の位置にカーソル表示をセットする
 	 * @param cursorLocation カーソル表示を設置したい項目の位置番号
@@ -240,7 +242,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 		}
 		this.repaint();
 	}
-	
+
 	/**
 	 * カーソル表示を削除し、項目未選択の状態にします
 	 */
@@ -262,7 +264,7 @@ public class TitlePanel extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key;
-		
+
 		/* キーコードの格納 */
 		key = e.getKeyCode();
 
