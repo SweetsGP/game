@@ -36,7 +36,6 @@ public class BlinkTask extends TimerTask{
 		if(chara==0){//自分がダメージを受けたとき
 			if(blinkFlag0){
 				image=c.loadImage(FilePath.battleDirPath+"white.png");
-			//	System.out.println("おそ松");
 				i++;
 			}else{
 				image=c.loadImage(FilePath.monstersDirPath+"sample2.jpg");
@@ -48,7 +47,6 @@ public class BlinkTask extends TimerTask{
 		}else{//相手がダメージを受けたとき
 			if(blinkFlag1){
 				image=c.loadImage(FilePath.battleDirPath+"white.png");
-			//	System.out.println("カラ松");
 				j++;
 			}else{
 				image=c.loadImage(FilePath.monstersDirPath+"sample1.jpg");

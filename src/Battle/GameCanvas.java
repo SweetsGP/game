@@ -18,16 +18,16 @@ import main.DataBase;
 import main.FilePath;
 
 public class GameCanvas extends Canvas{
-	
+
 	private static final long serialVersionUID = 1L;
 	BufferedImage me;//ウィンドウに表示するイメージ
 	BufferedImage en;
 	BufferedImage mehp;
 	BufferedImage enhp;
-	
 
 
-	//本来ならDBから情報をとってきて入れる
+
+	//本来ならDBから情報をとってきて入れる（プレイヤ側モンスター情報）
 	double maxmhp=50;
 	int mhp=50;
 	int mexp=89;
@@ -35,11 +35,11 @@ public class GameCanvas extends Canvas{
 	int mlv = 5;
 	String mname="カラ松";
 	int mhpwid;
-	
+
 	ArrayList<HashMap<String,String >> testname;
-	//testname 
-	
-	
+	//testname
+
+	//本来ならDBから情報をとってきて入れる（敵側モンスター情報）
 	double maxehp=50;
 	int ehp=50;
 	int eexp=96;
@@ -47,7 +47,7 @@ public class GameCanvas extends Canvas{
 	int elv = 5;
 	String ename="おそ松";
 	int ehpwid;
-	
+
 	int normdamage=10;
 	double mhprate=1;//初期HP残量割合はMAXなので１
 	double ehprate=1;
@@ -56,13 +56,13 @@ public class GameCanvas extends Canvas{
 	public GameCanvas(){
 		setSize(800,500);
 		setBounds(0,0,800,500);
-		
+
 		try {
 			testname= DataBase.wExecuteQuery("SELECT name FROM testmonsters WHERE monsterID = 1");
 		} catch(SQLException e) {
-			
+
 		}
-		mname = testname.get(0).get("name");
+		//ename = testname.get(0).get("name"); <-本来参照したいもの(ウホチュウ)と違うもの(gorityuu)をみているので、一旦コメントアウトしました(9/13)
 		me=loadImage(FilePath.monstersDirPath + "sample2.jpg");//表示用のイメージを取り込み
 		en=loadImage(FilePath.monstersDirPath + "sample1.jpg");
 		mehp=loadImage(FilePath.battleDirPath + "HP.png");
@@ -91,7 +91,7 @@ public class GameCanvas extends Canvas{
 
 		g=this.getGraphics();
 		super.paint(g);
-		
+
 		mhpwid=(int)(64*mhprate);
 		ehpwid=(int)(64*ehprate);
 
@@ -131,11 +131,11 @@ public class GameCanvas extends Canvas{
 			g.drawString(""+ehp,450,200);
 			g.setColor(Color.black);
 			g.drawString("/"+(int)maxehp,470,200);
-			g.drawString("EXP:"+eexp, 430, 240);
+			//g.drawString("EXP:"+eexp, 430, 240); <-敵の経験値はいらないかなと思ってコメントアウトしました
 		}
 
 	}
-	
+
 	public BufferedImage set_hpcolor(double hprate){
 		BufferedImage hp_pic;
 		if(hprate>0.5){
@@ -147,7 +147,7 @@ public class GameCanvas extends Canvas{
 		}
 		return hp_pic;
 	}
-	
+
 	public void set_string_color(Graphics g, double hprate){
 		if(hprate>0.5){
 			g.setColor(Color.black);
