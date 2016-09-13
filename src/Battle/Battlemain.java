@@ -46,6 +46,7 @@ public class Battlemain extends JPanel implements ActionListener{
 	int damage;
 	int i = 0;
 	int end =0;
+	int init_ehp;
 
 	private int turnCount;  // turnCount % 2 が 0 => プレイヤーターン, 1 => 相手ターン
 
@@ -72,10 +73,12 @@ public class Battlemain extends JPanel implements ActionListener{
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		String mname = testname.get(0).get("name");
-		enemy = new Character(10,7,50,mname,10);
+		String ename = testname.get(0).get("name");
+		String mname = "カラ松";//(仮)本来はDBからもってくる
+		init_ehp = 50;//(仮)本来はDBからもってくる
+		enemy = new Character(10,7,50,ename,10);
 		hero = new Character(20,7,50,mname,10);
-		
+
 		pskill[2] = testskill.get(0).get("name");
 		pskill[3] = testskill.get(1).get("name");
 
@@ -88,7 +91,7 @@ public class Battlemain extends JPanel implements ActionListener{
 
 		messageboard = new MessageBoard();
 		messageboard.setLocation(0, 500);
-		
+
 		body = create_graphicboard();
 		button1 = set_button("たたかう");
 		button2 = set_button("どうぐ");
@@ -133,7 +136,7 @@ public class Battlemain extends JPanel implements ActionListener{
 		 * 戦闘開始
 		 */
 		s.bgmRun(3);
-
+		canvas.ehp = enemy.hp;
 		wait(1);
 
 		messageboard.setMessage(enemy.name + "　が　あらわれた!");
@@ -240,14 +243,16 @@ public class Battlemain extends JPanel implements ActionListener{
 				 */
 				if (10 < i && i < 15) {
 					int j = i - 11;
-					
+
 					// 技(j+1)の処理
 					if (j == 1) {
+						damage = attack(hero.name,enemy.name,pskill[j],iryoku,enemy.hp,hero.atk,enemy.def);
+							// ↑ のdamageは、攻撃時に点滅させるためだけにつけています、damage計算が目的ではありません。
 						damage = 9999;  // 強制終了
 					} else {
 						damage = attack(hero.name,enemy.name,pskill[j],iryoku,enemy.hp,hero.atk,enemy.def);
 					}
-					
+
 					if(hit(testmeityu[j])==0){
 						wait(1);
 						messageboard.setMessage(enemy.name + "　に　" + damage + "　の　ダメージ!");
@@ -262,7 +267,7 @@ public class Battlemain extends JPanel implements ActionListener{
 						wait(1);
 						messageboard.setMessage("しかし、"+hero.name+"の　こうげきは　はずれた！");
 					}
-					
+
 					canvas.ehp = enemy.hp;
 					canvas.ehprate=enemy.hp/canvas.maxehp;
 					System.out.println("残りHP："+ enemy.hp );
@@ -305,7 +310,7 @@ public class Battlemain extends JPanel implements ActionListener{
 					wait(1);
 					messageboard.setMessage("しかし、"+enemy.name+"の　こうげきは　はずれた！");
 				}
-				
+
 				canvas.mhp = hero.hp;
 				canvas.mhprate=hero.hp/canvas.maxmhp;
 				canvas.repaint();
@@ -329,6 +334,10 @@ public class Battlemain extends JPanel implements ActionListener{
 			hero.exp = hero.exp + 30;
 			canvas.repaint();
 		}
+
+		/*敵モンスターのパラメータリセット*/
+		enemy.hp = init_ehp;
+		canvas.ehprate = 1;
 
 		s.bgmStop();
 
@@ -363,7 +372,7 @@ public class Battlemain extends JPanel implements ActionListener{
 			}
 		}
 	}
-	
+
 	public int hit(int hitrate){
 		double p = Math.random();
 		p = p*100;
@@ -421,7 +430,7 @@ public class Battlemain extends JPanel implements ActionListener{
 	public int attack(String hname,String ename,String waza , int iryoku,int hp, int atk, int def){
 		messageboard.setMessage(hname + "　の　" + waza+ "!");
 
-		wait(1);
+		//wait(1);
 
 		/*点滅メソッド*/
 		BlinkTask task0 = new BlinkTask();//タイマータスクのインスタンス
