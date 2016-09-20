@@ -182,17 +182,10 @@ public class map_main extends JPanel implements KeyListener{
 
 					// test code
 					if (i == 1) {
-<<<<<<< HEAD
 						testNpc = new NpcLoader("Merchant");
 						testNpc.create(1);
 //						testNpc = new NpcLoader("Inn");
 //						testNpc.create(2);
-=======
-						//						testNpc = new NpcLoader("Merchant");
-						//						testNpc.create(1);
-						testNpc = new NpcLoader("Inn");
-						testNpc.create(2);
->>>>>>> 00d678c79ccc02d7ad63c5c13a0d9778da1f856b
 					}
 
 					t[i] = new Thread(npcObjects[i]);
