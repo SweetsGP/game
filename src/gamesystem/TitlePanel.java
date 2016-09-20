@@ -177,6 +177,14 @@ public class TitlePanel extends BasePanel {
 	protected void periodicOpAfterInput() {
 		// no operation
 	}
+	
+	/**
+	 * ループ処理終了直前の処理
+	 */
+	@ Override
+	protected void finalOp() {
+		// no operation
+	}
 
 	// ==================================================
 	//  ペイント処理

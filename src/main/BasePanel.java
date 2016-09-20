@@ -208,6 +208,7 @@ public class BasePanel extends JPanel implements KeyListener {
 			}
 		}
 		
+		this.finalOp();
 	}
 	
 	/**
@@ -294,6 +295,14 @@ public class BasePanel extends JPanel implements KeyListener {
 		this.repaint();
 	}
 	
+	/**
+	 * ループ処理終了直前の処理
+	 */
+	protected void finalOp() {
+		this.requestFocus(false);
+		this.setVisible(false);
+	}
+	
 	// ==================================================
 	//  カーソル操作
 	// ==================================================
@@ -309,6 +318,15 @@ public class BasePanel extends JPanel implements KeyListener {
 		
 		this.mCursorArr.add(btn);
 		this.CURSOR_LOC_MAX++;
+	}
+	
+	/**
+	 * カーソル操作対象配列をクリアします
+	 */
+	protected void resetCursorArr() {
+		this.mCursorArr.clear();
+		this.mCursorLoc = CURSOR_UNLOC;
+		this.CURSOR_LOC_MAX = 0;
 	}
 	
 	/**
@@ -335,7 +353,7 @@ public class BasePanel extends JPanel implements KeyListener {
 		this.mCursorLoc = cursor;
 		btn = this.mCursorArr.get(this.mCursorLoc);
 		btn.setBorderPainted(true);
-		btn.setBorder(new LineBorder(Color.white, 2, true));
+		btn.setBorder(new LineBorder(Color.red, 2, true));
 		
 		this.repaint();
 	}

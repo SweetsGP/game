@@ -47,9 +47,11 @@ public class Merchant extends NpcBase {
 	void act() throws NpcLoadFailedException {
 		map_main map = PanelController.mp;
 		
-		map.menuPanel.setMenuType(MenuPanel.MERCHANT_MENU);
-		map.menuPanel.setMerchantProducts(productsInfo);
-		map.pushSpaceKey();
+//		map.merchantMenuPanel.setMenuType(MenuPanel.MERCHANT_MENU);
+		map.merchantMenuPanel.setMerchantProducts(productsInfo);
+		map.merchantMenuPanel.showPanel();
+		map.merchantMenuPanel.loop();
+//		map.pushSpaceKey();
 	}
 	
 	

@@ -1,104 +1,46 @@
 package gamesystem;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.LineBorder;
 
 import main.FilePath;
-import main.Main;
 import main.PanelController;
 
-public class HasItemsPanel extends JPanel implements KeyListener {
+public class HasItemsPanel extends ItemsPanel {
+	// 暫定 -> 後ほど削除
 	public static final int RUNNING_HIP_LOOP = 0;
 	public static final int EXIT_HIP_LOOP = 1;
-
-	protected static final int ITEM_NO_SELECT = -1;
-	protected static final int ITEM_SELECTED = 1;
+	
+	public static int exitHIPLoopFlag = RUNNING_HIP_LOOP;
 	
 	public static final int MODE_DEFAULT = 0;
 	public static final int MODE_SELL = 1;
-
-	public static int exitHIPLoopFlag = RUNNING_HIP_LOOP;
 	
-	private static int mode = MODE_DEFAULT;
-
-	protected int selectState = ITEM_NO_SELECT;
-
-	protected PanelController controller;
-	protected ArrayList<HashMap<String, String>> hasItems = null;
-
-	MenuEvent me;
-	protected static int key_state = 0;
-
-	JPanel pItemList;
-	JScrollPane scrollItemList;
-	JButton btnBack;
-
-	JButton[] btnItems = null;
-	protected int numOfItems;
-
-	protected HasItemsPanel() {}
-	public HasItemsPanel(PanelController c) {
-		controller = c;
-		me = new MenuEvent();
-
-		this.setLayout(null);
-		this.setSize(300, 540);
-		this.setBackground(Color.white);
-		this.setBorder(new LineBorder(Color.black, 2, true));
-
-		this.setFocusable(true);
-		this.addKeyListener(this);
-
-		// アイテム一覧表示領域 サイズ可変
-		pItemList = new JPanel();
-		pItemList.setLayout(null);
-		pItemList.setPreferredSize(new Dimension(280, 450));
-		pItemList.setOpaque(false);
-		scrollItemList = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollItemList.setViewportView(pItemList);
-		scrollItemList.setBounds(5, 5, 290, 460);
-		scrollItemList.setVisible(false);
-		this.add(scrollItemList);
-
-		// もどるボタン
-		btnBack = new JButton("もどる");
-		btnBack.setFont(new Font("PixelMplus10",Font.PLAIN,13));
-		btnBack.setBounds(150, 470, 140, 60);
-		btnBack.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				exitHIPLoopFlag = EXIT_HIP_LOOP;
-			}
-		});
-		this.add(btnBack);
-
-		this.setVisible(false);
+	protected static int mMode = MODE_DEFAULT;
+	// =====
+	
+	protected ArrayList<HashMap<String, String>> mHasItems;
+	
+	public HasItemsPanel(PanelController pc) {
+		super(pc);
+		
+		mHasItems = null;
 	}
-
+	
 	/**
-	 * @deprecated 引数なしのほうをつかってください.
-	 * キャラクタが保持しているどうぐ(アイテム)の一覧を表示する
-	 * @param hi 所持しているアイテムの情報
+	 * パネルの可視化
 	 */
-	@Deprecated
-	public void showHasItems(ArrayList<HashMap<String, String>> hi) {
-		hasItems = hi;
+	@Override
+	public void showPanel() {
+		mHasItems = dba.getHasItemsInfo();
 
 		// 更新(2回目以降のアクセス)なら、以前のボタンを除去して、アイテムのリスト表示領域のサイズをリセット
 		if (!Objects.equals(btnItems, null)) {
@@ -109,232 +51,102 @@ public class HasItemsPanel extends JPanel implements KeyListener {
 			}
 
 			pItemList.setPreferredSize(new Dimension(280, 450));
+			resetCursorArr();
 		}
 
-		numOfItems = hasItems.size();  // どうぐの種類数 -> キズぐすり、まひなおし といった単位で
-		btnItems = new JButton[numOfItems];
-		ImageIcon[] iconItems = new ImageIcon[numOfItems];
+		mNumOfItems = mHasItems.size();  // どうぐの種類数 -> キズぐすり、まひなおし といった単位で
+		btnItems = new JButton[mNumOfItems];
+		ImageIcon[] iconItems = new ImageIcon[mNumOfItems];
 
-		for (int i=0; i<numOfItems; i++) {
+		for (int i=0; i<mNumOfItems; i++) {
 			if (i == 6) {
 				// panelサイズ変更
-				pItemList.setPreferredSize(new Dimension(280, 450 + 75*(numOfItems - i)));
+				pItemList.setPreferredSize(new Dimension(280, 450 + 75*(mNumOfItems - i)));
 				revalidate();
 			}
 
-			iconItems[i] = new ImageIcon(FilePath.itemsDirPath + hasItems.get(i).get("img"));
+			iconItems[i] = new ImageIcon(FilePath.itemsDirPath + mHasItems.get(i).get("img"));
 
-			btnItems[i] = new JButton(hasItems.get(i).get("name") + "(" + hasItems.get(i).get("count") + ")", iconItems[i]);
+			btnItems[i] = new JButton(mHasItems.get(i).get("name") + "(" + mHasItems.get(i).get("count") + ")", iconItems[i]);
 			btnItems[i].setFont(new Font("PixelMplus10",Font.PLAIN,13));
 			btnItems[i].setHorizontalAlignment(JButton.LEFT);
 			btnItems[i].setBorderPainted(false);
 			btnItems[i].setBounds(0, 75*i, 260, 70);
 			btnItems[i].addActionListener(new ActionListener(){
+				private int mBtnNum;
+				
+				public ActionListener setBtnNum(int btnNum) {
+					this.mBtnNum = btnNum;
+					return this;
+				}
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					onClickBtnItem(e);
+					mSelectedItem = this.mBtnNum;
 				}
-			});
+			}.setBtnNum(i));
 			pItemList.add(btnItems[i]);
+			addToCursorArr(btnItems[i]);
 		}
-
-		// 表示
-		this.setVisible(true);
-		scrollItemList.setVisible(true);
-		this.requestFocus(true);
-	}
-
-	/**
-	 * キャラクタが保持しているどうぐ(アイテム)の一覧を表示する
-	 */
-	public void showHasItems() {
-		showHasItems(me.getHasItemsInfo());
-	}
-	
-	public void setMode(int m) {
-		switch (m) {
-		case MODE_DEFAULT:
-			mode = m;
-			break;
-			
-		case MODE_SELL:
-			mode = m;
-			break;
-			
-		default:
-			break;
-		}
-	}
-
-	/**
-	 * 各アイテムボタンをクリックしたときの処理
-	 * @param e
-	 */
-	public void onClickBtnItem(ActionEvent e) {
-		for (int i = 0; i < btnItems.length; i++) {
-			if (e.getSource() == btnItems[i]) {
-				selectState = i + ITEM_SELECTED;
-				setCursor(i);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * 入力待機用ループ
-	 */
-	public void loop() {
-		ItemDetailPanel idp;
 		
-		int cursorLocation = ITEM_NO_SELECT;
-
-		key_state = 0;
-		cursorLocation = ITEM_NO_SELECT;
-		exitHIPLoopFlag = RUNNING_HIP_LOOP;
-
-		while(true) {
-			if (Main.exitFlag != Main.RUNNING || exitHIPLoopFlag != RUNNING_HIP_LOOP) {
-				break;
-			}
-
-			// アイテム選択時の処理
-			if (selectState != ITEM_NO_SELECT) {
-				processBtnItem();
-			}
-			selectState = ITEM_NO_SELECT;
-
-			// キー入力受付
-			switch (key_state) {
-			case 1:  // UP
-				if (cursorLocation > 0) {
-					cursorLocation--;
-				}
-				break;
-			case 2:  // DOWN
-				if (cursorLocation < numOfItems - 1) {
-					cursorLocation++;
-				}
-				break;
-			case 3:  // LEFT
-				// no operation
-				break;
-			case 4:  // RIRHT
-				// no operation
-				break;
-			case 5:  // Z
-				if (cursorLocation != ITEM_NO_SELECT) {
-					btnItems[cursorLocation].doClick();
-				}
-				break;
-			case 6:  // X
-				// no operation
-				break;
-			case 7:  // スペースキー
-				this.requestFocus(false);
-				this.setVisible(false);
-				exitHIPLoopFlag = EXIT_HIP_LOOP;
-				break;
-			default:
-				break;
-			}
-			key_state = 0;
-
-			// カーソル表示 (暫定的に青枠表示)
-			if (cursorLocation != ITEM_NO_SELECT) {
-				setCursor(cursorLocation);
-			}
-
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		this.requestFocus(false);
-		this.setVisible(false);
-
+		super.showPanel();
 	}
 	
+	// 暫定
 	/**
-	 * 与えられた番号の位置にカーソル表示をセットする
-	 * @param cursorLocation カーソル表示を設置したい項目の位置番号
+	 * キー入力受付前の定期処理
 	 */
-	public void setCursor(int cursorLocation) {
-		for (int i = 0; i < numOfItems; i++) {
-			if (i == cursorLocation) {
-				btnItems[i].setBorderPainted(true);
-				btnItems[i].setBorder(new LineBorder(Color.BLUE, 2, true));
-			} else {
-				btnItems[i].setBorderPainted(false);
-			}
+	@Override
+	protected void periodicOpBeforeInput() {
+		if (exitHIPLoopFlag != RUNNING_HIP_LOOP) {
+			stop();
 		}
-		this.repaint();
+		
+		super.periodicOpBeforeInput();
 	}
+	// =====
 	
 	/**
 	 * アイテム選択時の処理
+	 * @param selectedItemIndex 選択されたアイテムのインデックス
 	 */
-	public void processBtnItem() {
+	@Override
+	public void actionItemSelected(int selectedItemIndex) {
 		ItemDetailPanel idp;
 
-		idp = (ItemDetailPanel )controller.getPanelInstance(PanelController.ITEM_DETAIL);
-		if (mode == MODE_SELL) {
+		idp = (ItemDetailPanel )mController.getPanelInstance(PanelController.ITEM_DETAIL);
+		if (mMode == MODE_SELL) {
 			idp.setMode(ItemDetailPanel.MODE_PRODUCT);
 			idp.setBuyOrSell(ItemDetailPanel.PRODUCT_SELL);
 		}
 		
-		controller.showItemDetailPanel(hasItems.get(selectState - ITEM_SELECTED));
+		mController.showItemDetailPanel(mHasItems.get(selectedItemIndex));
 		idp.loop();
 		
-		if (mode == MODE_SELL) {
+		if (mMode == MODE_SELL) {
 			idp.setMode(ItemDetailPanel.MODE_DEFAULT);
 		}
 		
 		this.setVisible(false);
-		this.showHasItems();
-		//				this.requestFocus(true);
-		
+		this.showPanel();
 	}
+	
+	/**
+	 * 表示モードの設定を行います
+	 * @param m
+	 */
+	public void setMode(int m) {
+		switch (m) {
+		case MODE_DEFAULT:
+			mMode = m;
+			break;
 
-	@Override
-	public void keyTyped(KeyEvent e) {}
+		case MODE_SELL:
+			mMode = m;
+			break;
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int key;
-		
-		/* キーコードの格納 */
-		key = e.getKeyCode();
-
-		switch(key) {
-		case KeyEvent.VK_UP:
-			key_state = 1;
-			break;
-		case KeyEvent.VK_DOWN:
-			key_state = 2;
-			break;
-		case KeyEvent.VK_LEFT:
-			key_state = 3;
-			break;
-		case KeyEvent.VK_RIGHT:
-			key_state = 4;
-			break;
-		case KeyEvent.VK_Z:
-			key_state = 5;
-			break;
-		case KeyEvent.VK_X:
-			key_state = 6;
-			break;
-		case KeyEvent.VK_SPACE:
-			key_state = 7;
-			break;
 		default:
 			break;
 		}
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {}
-
 }

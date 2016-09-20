@@ -199,7 +199,8 @@ public class Battlemain extends JPanel implements ActionListener{
 					}else if(i == 2) {  // どうぐ
 						mainViewSetEnabled(false);
 
-						hip.showHasItems();
+//						hip.showHasItems();
+						hip.showPanel();
 						hip.loop();
 
 						mainViewSetEnabled(true);
