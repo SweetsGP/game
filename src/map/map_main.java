@@ -21,6 +21,7 @@ import main.FilePath;
 import main.Main;
 import main.PanelController;
 import main.Sound;
+import npc.MerchantMenuPanel;
 import npc.NpcLoader;
 
 import java.awt.Color;
@@ -71,6 +72,7 @@ public class map_main extends JPanel implements KeyListener{
 
 	// メニュー
 	public MenuPanel menuPanel;
+	public MerchantMenuPanel merchantMenuPanel;
 	public HasMonstersPanel hasMonstersPanel;
 	public HasItemsPanel hasItemsPanel;
 	public ProductsListPanel productsListPanel;
@@ -126,10 +128,14 @@ public class map_main extends JPanel implements KeyListener{
 		productsListPanel.setLocation(180, 50);
 
 		/* メニュー */
-		menuPanel = new MenuPanel(controller, hasMonstersPanel, hasItemsPanel, productsListPanel);
+		menuPanel = new MenuPanel(controller, hasMonstersPanel, hasItemsPanel);
 		menuPanel.setLocation(500, 0);
+		/* 商人用メニュー */
+		merchantMenuPanel = new MerchantMenuPanel(controller, productsListPanel, hasItemsPanel);
+		merchantMenuPanel.setLocation(500, 0);
 
 		p.add(menuPanel);
+		p.add(merchantMenuPanel);
 		p.add(hasMonstersPanel);
 		p.add(hasItemsPanel);
 		p.add(productsListPanel);
@@ -176,10 +182,10 @@ public class map_main extends JPanel implements KeyListener{
 
 					// test code
 					if (i == 1) {
-						//						testNpc = new NpcLoader("Merchant");
-						//						testNpc.create(1);
-						testNpc = new NpcLoader("Inn");
-						testNpc.create(2);
+						testNpc = new NpcLoader("Merchant");
+						testNpc.create(1);
+//						testNpc = new NpcLoader("Inn");
+//						testNpc.create(2);
 					}
 
 					t[i] = new Thread(npcObjects[i]);
@@ -294,7 +300,7 @@ public class map_main extends JPanel implements KeyListener{
 					}
 					key_state = 0;
 				}else if(key_state == 7){	//SPACE action (Menu)
-					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
+//					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
 					pushSpaceKey();
 					key_state = 0;
 				}
@@ -319,7 +325,9 @@ public class map_main extends JPanel implements KeyListener{
 	public void pushSpaceKey() {
 		status = 2;
 		button1.setVisible(false);
-		menuPanel.showMenu();
+//		menuPanel.showMenu();
+		menuPanel.showPanel();
+		menuPanel.loop();
 		button1.setVisible(true);
 		status = 0;
 	}

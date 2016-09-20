@@ -11,6 +11,7 @@ import main.Main;
 import main.PanelController;
 import main.SaveDataIO;
 
+@Deprecated
 public class MenuEvent {
 	
 	public MenuEvent() {}
