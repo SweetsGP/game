@@ -42,7 +42,7 @@ public class map_main extends JPanel implements KeyListener{
 	JLabel button1;
 	Point b_point;
 	ImageIcon icon;
-	
+
 	public Battlemain bp_map;
 
 	static int key_state = 0;
@@ -67,7 +67,7 @@ public class map_main extends JPanel implements KeyListener{
 
 	npc npcObjects[];
 	Thread t[];
-	
+
 	NpcLoader testNpc;
 
 	// メニュー
@@ -87,7 +87,7 @@ public class map_main extends JPanel implements KeyListener{
 		/* map creating (init)*/
 		this.setSize(800,620);
 		this.setLayout(null);
-		
+
 		this.setFocusable(true);
 
 		p = create_map();
@@ -122,7 +122,7 @@ public class map_main extends JPanel implements KeyListener{
 		// 所持アイテム一覧表示パネル
 		hasItemsPanel = new HasItemsPanel(controller);
 		hasItemsPanel.setLocation(180, 50);
-		
+
 		// 商品一覧表示パネル
 		productsListPanel = new ProductsListPanel(controller);
 		productsListPanel.setLocation(180, 50);
@@ -149,6 +149,8 @@ public class map_main extends JPanel implements KeyListener{
 	public void loop(Sound s){
 		// ループ終了フラグ
 		exitMapLoopFlag = RUNNING_MAP_LOOP;
+		int sound_on = 0;
+		double sound_changer = 0.5;
 
 		npc_units = 0;
 
@@ -158,6 +160,7 @@ public class map_main extends JPanel implements KeyListener{
 		key_state = 0;
 
 		s.bgmRun(0);
+		sound_on = 1;
 
 		try{
 			if(status == 0){
@@ -168,7 +171,7 @@ public class map_main extends JPanel implements KeyListener{
 				key_state = 0;
 
 				message();
-				
+
 				for(int i = 0 ; i < 2 ; i++){
 					if(Objects.equals(npcObjects[i], null)) {
 						npcObjects[i] = null;
@@ -176,20 +179,27 @@ public class map_main extends JPanel implements KeyListener{
 
 					npcObjects[i] = new npc(i);
 					npc_units++;
-					
+
 					// test code
 					if (i == 1) {
+<<<<<<< HEAD
 						testNpc = new NpcLoader("Merchant");
 						testNpc.create(1);
 //						testNpc = new NpcLoader("Inn");
 //						testNpc.create(2);
+=======
+						//						testNpc = new NpcLoader("Merchant");
+						//						testNpc.create(1);
+						testNpc = new NpcLoader("Inn");
+						testNpc.create(2);
+>>>>>>> 00d678c79ccc02d7ad63c5c13a0d9778da1f856b
 					}
 
 					t[i] = new Thread(npcObjects[i]);
 					t[i].start();
 				}
 			}
-			
+
 			/* object moving treatment */
 			while(true){
 				if (Main.exitFlag != Main.RUNNING || exitMapLoopFlag != RUNNING_MAP_LOOP) {
@@ -223,11 +233,11 @@ public class map_main extends JPanel implements KeyListener{
 					if(encounter >= md.Max_enc ){
 						action_key = -1;
 						message();
-						
+
 						status = 3;
 						button1.setVisible(false);
 						p.setVisible(false);
-						
+
 						s.bgmStop();
 						controller.showBattlemainPanel();
 						bp_map = (Battlemain )controller.getPanelInstance(PanelController.BATTLE);
@@ -236,7 +246,7 @@ public class map_main extends JPanel implements KeyListener{
 						p.setVisible(true);
 						button1.setVisible(true);
 						this.requestFocus(true);
-						
+
 						s.bgmRun(0);
 
 						status = 0;
@@ -286,9 +296,16 @@ public class map_main extends JPanel implements KeyListener{
 					action();
 					status = 0;
 					key_state = 0;
-				}else if(key_state == 6){	//Battle 
-					key_state = 0;
+				}else if(key_state == 6){	//Sound ON/OFF 
 					//not developed yet
+					if(sound_on == 1){
+						s.bgmStop();
+						sound_on--;
+					}else{
+						s.bgmRun(0);
+						sound_on++;
+					}
+					key_state = 0;
 				}else if(key_state == 7){	//SPACE action (Menu)
 //					menuPanel.setMenuType(MenuPanel.DEFAULT_MENU);
 					pushSpaceKey();
@@ -311,7 +328,7 @@ public class map_main extends JPanel implements KeyListener{
 		p.setVisible(false);
 		this.setVisible(false);
 	}
-	
+
 	public void pushSpaceKey() {
 		status = 2;
 		button1.setVisible(false);
@@ -665,9 +682,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][1] == b && a - npc_ex[i][0] == 1){
-						action_key = 1;
-						npc_tlk = i;
-						break;
+					action_key = 1;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -678,9 +695,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][1] == b  && npc_ex[i][0] - a == 1){
-						action_key = 2;
-						npc_tlk = i;
-						break;
+					action_key = 2;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -691,9 +708,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][0] == a && b - npc_ex[i][1]  == 1){
-						action_key = 3;
-						npc_tlk = i;
-						break;
+					action_key = 3;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -704,9 +721,9 @@ public class map_main extends JPanel implements KeyListener{
 			i = 0;
 			while(i < npc_units){
 				if(npc_ex[i][0] == a && npc_ex[i][1] - b == 1){
-						action_key = 4;
-						npc_tlk = i;
-						break;
+					action_key = 4;
+					npc_tlk = i;
+					break;
 				}
 				i++;
 			}
@@ -749,6 +766,12 @@ public class map_main extends JPanel implements KeyListener{
 			break;
 		case KeyEvent.VK_SPACE:
 			key_state = 7;
+			break;
+		case KeyEvent.VK_1:
+			key_state = 8;
+			break;
+		case KeyEvent.VK_2:
+			key_state = 9;
 			break;
 		}
 	}

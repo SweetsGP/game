@@ -118,8 +118,9 @@ public class Sound implements LineListener {
 	 * @param volumeScale 設定する音量のスケール(0~100)
 	 */
 	public void setVolumeBgm(double volumeScale) {
+		System.out.println(volumeScale);
 		for (int i=0; i<BGM_NUMBER; i++) {
-			controlBgm[i].setValue((float)Math.log10(volumeScale)*2);
+			controlBgm[i].setValue((float)Math.log10(volumeScale/100)*20);
 		}
 	}
 	
@@ -129,7 +130,7 @@ public class Sound implements LineListener {
 	 */
 	public void setVolumeSe(double volumeScale) {
 		for (int i=0; i<SE_NUMBER; i++) {
-			controlSe[i].setValue((float)Math.log10(volumeScale)*2);
+			controlSe[i].setValue((float)Math.log10(volumeScale/100)*20);
 		}
 	}
 }
