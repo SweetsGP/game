@@ -14,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import main.BasePanel;
 import main.FilePath;
 import main.Main;
 import main.PanelController;
@@ -36,6 +35,7 @@ public class TitlePanel extends BasePanel {
 	private BufferedImage backgroundImage;
 	private JLabel pTitle;
 	private JButton btnNew,btnContinue,btnSetting, btnExit;
+	private JButton btnBattle;
 
 	/**
 	 * コンストラクタ
@@ -70,14 +70,34 @@ public class TitlePanel extends BasePanel {
 		btnNew.setBounds(50, 500, 150, 40);
 		btnNew.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				showCursor(ACTION_NEW_GAME);
+//				showCursor(ACTION_NEW_GAME);
 				mController.showCharacterMakingPanel();
+				PanelController.reserveCallLoop(PanelController.CHARACTER_CREATING_PANEL);
 				stop();
 				deleteCursor();
 			}
 		});
 		this.add(btnNew);
 		addToCursorArr(btnNew);
+		
+		// test code -> バトル画面へのダイレクトアクセス
+		btnBattle = new JButton("Battle");
+		btnBattle.setFont(new Font("PixelMplus10",Font.PLAIN,16));
+		btnBattle.setForeground(Color.white);
+		btnBattle.setContentAreaFilled(false);
+		btnBattle.setBorderPainted(false);
+		btnBattle.setBounds(230, 450, 150, 40);
+		btnBattle.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				mController.showBattlemainPanel();
+				PanelController.reserveCallLoop(PanelController.BATTLE_PANEL);
+				stop();
+				deleteCursor();
+			}
+		});
+		this.add(btnBattle);
+		addToCursorArr(btnBattle);
+		// =====
 
 //		btnContinue = new JButton("Continue");
 		btnContinue = new JButton("Map");
@@ -88,9 +108,10 @@ public class TitlePanel extends BasePanel {
 		btnContinue.setBounds(230, 500, 150, 40);
 		btnContinue.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				showCursor(ACTION_CONTINUE);
+//				showCursor(ACTION_CONTINUE);
 //				if (SaveDataIO.checkExistsSaveData()) {
 					mController.showMapPanel();
+					PanelController.reserveCallLoop(PanelController.MAP_PANEL);
 //				} else {
 //					// セーブデータが見つからない場合は遷移しない
 //					JOptionPane.showMessageDialog(null, "Not found save data.",
@@ -103,8 +124,7 @@ public class TitlePanel extends BasePanel {
 		this.add(btnContinue);
 		addToCursorArr(btnContinue);
 
-//		btnSetting = new JButton("Settings");
-		btnSetting = new JButton("Battle");
+		btnSetting = new JButton("Settings");
 		btnSetting.setFont(new Font("PixelMplus10",Font.PLAIN,16));
 		btnSetting.setForeground(Color.white);
 		btnSetting.setContentAreaFilled(false);
@@ -112,8 +132,9 @@ public class TitlePanel extends BasePanel {
 		btnSetting.setBounds(410, 500, 150, 40);
 		btnSetting.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				showCursor(ACTION_SETTINGS);
-				mController.showBattlemainPanel();
+//				showCursor(ACTION_SETTINGS);
+				mController.showSettingsPanel();
+				PanelController.reserveCallLoop(PanelController.SETTINGS_PANEL);
 				stop();
 				deleteCursor();
 			}
@@ -129,7 +150,7 @@ public class TitlePanel extends BasePanel {
 		btnExit.setBounds(590, 500, 150, 40);
 		btnExit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				showCursor(ACTION_EXIT);
+//				showCursor(ACTION_EXIT);
 				int exitConfirmAns = JOptionPane.showConfirmDialog(mainFrame,
 						"ゲームを終了しますか？",
 						Main.GAME_TITLE, JOptionPane.YES_NO_OPTION);

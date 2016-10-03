@@ -1,5 +1,6 @@
 package gamesystem;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -8,9 +9,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 
 import gameutil.DBAccess;
-import main.BasePanel;
 import main.PanelController;
 
 public class ItemsPanel extends BasePanel{
@@ -28,8 +29,8 @@ public class ItemsPanel extends BasePanel{
 	
 	protected int mSelectedItem;
 	
-	public ItemsPanel(PanelController pc) {
-		super(pc);
+	public ItemsPanel() {
+		super();
 		
 		dba = new DBAccess();
 		
@@ -37,6 +38,8 @@ public class ItemsPanel extends BasePanel{
 		mSelectedItem = ITEM_NO_SELECTED;
 		
 		this.setSize(300, 540);
+		this.setBackground(Color.white);
+		this.setBorder(new LineBorder(Color.black, 2, true));
 		
 		// アイテム一覧表示領域 サイズ可変
 		pItemList = new JPanel();
@@ -64,6 +67,12 @@ public class ItemsPanel extends BasePanel{
 		this.add(btnBack);
 		
 		this.setVisible(false);
+	}
+	
+	public ItemsPanel(PanelController pc) {
+		this();
+		
+		this.mController = pc;
 	}
 	
 	/**

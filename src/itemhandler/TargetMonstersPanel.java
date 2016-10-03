@@ -1,51 +1,61 @@
 package itemhandler;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.border.LineBorder;
-
-import gamesystem.ControlBox;
 import gamesystem.HasMonstersPanel;
-import gamesystem.MenuEvent;
 import main.PanelController;
 
 public class TargetMonstersPanel extends HasMonstersPanel {
-	private int selectedTarget = 0;
+	private int mSelectedTarget = ITEM_NO_SELECTED;
 
 	public TargetMonstersPanel(PanelController c) {
 		super();
-		
-		this.hasCb = false;
-		
-		this.setLayout(null);
-		this.setSize(300, 480);
-		this.setBackground(Color.white);
-		this.setBorder(new LineBorder(Color.black, 2, true));
-		
-		this.setFocusable(true);
-		
-		this.setVisible(false);
 	}
 	
+	/**
+	 * キー入力受付前の定期処理
+	 */
 	@Override
-	public void onClickBtnMonster(ActionEvent e) {
-		for(int i = 0; i < 6; i++) {
-			if (e.getSource() == btnMonsters[i]) {
-				selectedTarget = i + 1;
-				break;
-			}
+	protected void periodicOpBeforeInput() {
+		if (mSelectedItem != ITEM_NO_SELECTED) {
+			actionItemSelected(mSelectedItem);
+			mSelectedItem = ITEM_NO_SELECTED;
 		}
 	}
 	
-	public int getSelectedMonster() {
-		return selectedTarget;
+	/**
+	 * ループ処理終了直前の処理(最後の1回のみ)
+	 */
+	@Override
+	protected void finalOp() {
+		// no operation
 	}
 	
-	public void setSelectedMonster(int select) {
-		selectedTarget = select;
+	/**
+	 * アイテム選択時の処理
+	 * @param selectedItemIndex 選択されたアイテムのインデックス
+	 */
+	@Override
+	public void actionItemSelected(int selectedItemIndex) {
+		mSelectedTarget = selectedItemIndex;
+		stop();
+	}
+	
+	/**
+	 * もどるボタンの処理
+	 */
+	public void onClickBtnBack() {
+		this.requestFocus(false);
+		this.setVisible(false);
+		stop();
+	}
+	
+	/**
+	 * 選択されたモンスターのインデックスを返す
+	 * @return
+	 */
+	public int getSelectedMonster() {
+		int returnVal = mSelectedTarget;
+		mSelectedTarget = ITEM_NO_SELECTED;
+		return returnVal;
 	}
 
 }

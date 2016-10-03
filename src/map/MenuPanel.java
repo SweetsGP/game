@@ -205,7 +205,8 @@ public class MenuPanel extends ItemsPanel {
 			this.requestFocus(false);
 //			setEnabledInner(false);
 			this.setVisible(false);
-			hasMonstersPanel.showHasMonsters();
+//			hasMonstersPanel.showHasMonsters();
+			hasMonstersPanel.showPanel();
 			hasMonstersPanel.loop();
 			this.setVisible(true);
 //			setEnabledInner(true);
@@ -230,8 +231,9 @@ public class MenuPanel extends ItemsPanel {
 			
 			this.requestFocus(false);
 			mController.showSettingsPanel();
-			sp = (SettingsPanel )mController.getPanelInstance(PanelController.SETTINGS);
-			sp.loop();
+//			sp = (SettingsPanel )mController.getPanelInstance(PanelController.SETTINGS_PANEL);
+//			sp.loop();
+			PanelController.callLoop(PanelController.SETTINGS_PANEL);
 			this.requestFocus(true);
 			break;
 			
@@ -253,6 +255,7 @@ public class MenuPanel extends ItemsPanel {
 //				mapMain.button1.setVisible(true);
 				map_main.exitMapLoopFlag = map_main.EXIT_MAP_LOOP;
 				mController.showTitlePanel();
+				PanelController.reserveCallLoop(PanelController.TITLE_PANEL);
 			}
 			break;
 		default:

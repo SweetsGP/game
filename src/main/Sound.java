@@ -46,6 +46,8 @@ public class Sound implements LineListener {
 				bgm[bgm_num].open(streamBgm);
 				// コントロールを取得
 				controlBgm[bgm_num] = (FloatControl)bgm[bgm_num].getControl(FloatControl.Type.MASTER_GAIN);
+				// 初期値設定
+				controlBgm[bgm_num].setValue((float )Math.log10(Main.saveData.getVolumeBgm()/100)*20);
 				// ストリームを閉じる
 				streamBgm.close();
 			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
@@ -72,6 +74,8 @@ public class Sound implements LineListener {
 				se[se_num].open(streamSe);
 				// コントロールを取得
 				controlSe[se_num] = (FloatControl)se[se_num].getControl(FloatControl.Type.MASTER_GAIN);
+				// 初期値設定
+				controlSe[se_num].setValue((float )Math.log10(Main.saveData.getVolumeSe()/100)*20);
 				// ストリームを閉じる
 				streamSe.close();
 			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
@@ -118,10 +122,10 @@ public class Sound implements LineListener {
 	 * @param volumeScale 設定する音量のスケール(0~100)
 	 */
 	public void setVolumeBgm(double volumeScale) {
-		System.out.println(volumeScale);
 		for (int i=0; i<BGM_NUMBER; i++) {
 			controlBgm[i].setValue((float)Math.log10(volumeScale/100)*20);
 		}
+		Main.saveData.setVolumeBgm((int )volumeScale);
 	}
 	
 	/**
@@ -132,5 +136,6 @@ public class Sound implements LineListener {
 		for (int i=0; i<SE_NUMBER; i++) {
 			controlSe[i].setValue((float)Math.log10(volumeScale/100)*20);
 		}
+		Main.saveData.setVolumeSe((int )volumeScale);
 	}
 }

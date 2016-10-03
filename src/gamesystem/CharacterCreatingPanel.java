@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import main.BasePanel;
 import main.FilePath;
 import main.HasPlaceholderJTextField;
 import main.PanelController;

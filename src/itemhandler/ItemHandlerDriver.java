@@ -58,7 +58,7 @@ public class ItemHandlerDriver {
 	public void use() throws ItemHandlingFailedException {
 		// アイテム効果のバトル中の発動 -> 無い場合にはその旨を表示して処理終了
 		if ((itemFlag != ItemHandler.ITEM_USE_ON_BATTLE_OK)
-				&& (PanelController.state == PanelController.STATE_BATTLE)) {
+				&& (PanelController.getBeforeCalledLoopNum() == PanelController.BATTLE_PANEL)) {
 			JOptionPane.showMessageDialog(null, "このアイテムをバトル中に使用することはできません。",
 					Main.GAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
 			return;

@@ -12,7 +12,9 @@ import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
+import gamesystem.CharaStatus;
 import gamesystem.MainFrame;
+import gamesystem.SplashPanel;
 
 public class Main {
 	// ゲームタイトル名
@@ -24,6 +26,9 @@ public class Main {
 
 	// ゲームループ終了フラグ -> EXIT_OK もしくは EXIT_ERROR で各ループを強制的に離脱
 	public static int exitFlag = RUNNING;
+	
+	// セーブデータ
+	public static CharaStatus saveData = null;
 
 	public Main() {}
 
@@ -80,9 +85,28 @@ public class Main {
 			if (pmi.tryLock()) {  // 二重起動がなければ、lockをかけてゲーム起動
 				// ==================================================
 				// 初期化処理
+				
+				// フレーム(ウィンドウ生成)
+				MainFrame mainFrame = new MainFrame(GAME_TITLE);
+				mainFrame.getContentPane().setPreferredSize(
+						new Dimension(MainFrame.WINDOW_WIDTH, MainFrame.WINDOW_HEIGHT));
+				mainFrame.pack();
+				mainFrame.setVisible(true);
 
 				// 独自フォント導入
 				m.setFontToEnv();
+				
+				// スプラッシュ表示
+				SplashPanel spp = new SplashPanel();
+				mainFrame.add(spp);
+				spp.showPanel();
+				
+				// セーブデータ読み込み
+				if (SaveDataIO.checkExistsSaveData()) {
+					saveData = SaveDataIO.readSaveData();
+				} else {
+					saveData = new CharaStatus();  // test code
+				}
 
 				// データベース接続
 				DataBase.openDB();
@@ -210,18 +234,11 @@ public class Main {
 //				}
 				////////
 
-				// フレーム(ウィンドウ生成)
-				MainFrame mainFrame = new MainFrame(GAME_TITLE);
-				mainFrame.getContentPane().setPreferredSize(
-						new Dimension(MainFrame.WINDOW_WIDTH, MainFrame.WINDOW_HEIGHT));
-				mainFrame.pack();
-				mainFrame.setVisible(true);
-
 				// サウンドインスタンス生成・初期化
 				Sound s = new Sound();
 
 				// 画面遷移管理初期化
-				PanelController.init(mainFrame, s);
+				PanelController.init(mainFrame, spp, s);
 
 				// ==================================================
 				// ゲーム内メインルーチン
@@ -233,7 +250,7 @@ public class Main {
 					}
 
 					// 画面/状態遷移管理開始
-					PanelController.loop(s);
+					PanelController.checkCallLoop();
 
 					Thread.sleep(100);
 				}

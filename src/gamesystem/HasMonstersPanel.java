@@ -1,14 +1,9 @@
 package gamesystem;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,539 +11,349 @@ import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 
 import Battle.Battlemain;
+import gameutil.DBAccess;
 import main.DataBase;
-import main.Env;
 import main.FilePath;
-import main.Main;
 import main.PanelController;
+import map.map_main;
 
-public class HasMonstersPanel extends JPanel implements KeyListener {
+public class HasMonstersPanel extends ItemsPanel {
+	// 暫定
 	public static final int RUNNING_HMP_LOOP = 0;
 	public static final int EXIT_HMP_LOOP = 1;
-
-	public static final int MONSTER_NO_SELECT = -1;
-
+	
+	public static int exitHMPLoopFlag = RUNNING_HMP_LOOP;
+	// =====
+	
 	public static final int ACTION_NO_SELECT = -1;
 	public static final int ACTION_SHOW_DETAIL = 0;
 	public static final int ACTION_CHANGE_ORDER = 1;
 	public static final int ACTION_BACK = -2;
-
-	public static int exitHMPLoopFlag = RUNNING_HMP_LOOP;
-
-	protected boolean hasCb = true;
-	protected int mSelected = MONSTER_NO_SELECT;
-	protected int cbSelected = ACTION_NO_SELECT;
-
-	protected boolean changeOrderFlag = false;
-	protected int changeOrderMonsterDest = MONSTER_NO_SELECT;
-
-	protected PanelController controller;
-	protected ArrayList<HashMap<String, String>> hasMonstersInfo;
-	protected int hasMonstersNum;
-
-	protected JButton btnMonster1 = null, btnMonster2 = null, btnMonster3 = null,
-			btnMonster4 = null, btnMonster5 = null, btnMonster6 = null;
-	protected JButton[] btnMonsters = {btnMonster1, btnMonster2, btnMonster3,
-			btnMonster4, btnMonster5, btnMonster6};
-	protected JButton btnBack;
-
-	protected ImageIcon iconMonster1 = null, iconMonster2 = null, iconMonster3 = null,
-			iconMonster4 = null, iconMonster5 = null, iconMonster6 = null;
-	protected ImageIcon[] iconMonsters = {iconMonster1, iconMonster2, iconMonster3,
-			iconMonster4, iconMonster5, iconMonster6};
-
-	protected ControlBox cbAction;
-	protected String[] controlList;
-
-	MenuEvent me;
-	private static int key_state = 0;
-
-	public HasMonstersPanel() {}
-	public HasMonstersPanel(PanelController c) {
-		controller = c;
-		me = new MenuEvent();
-
-		this.setLayout(null);
-		this.setSize(600, 540);
-		this.setOpaque(false);
-
-		this.setFocusable(true);
-		this.addKeyListener(this);
-
-		controlList = new String[2];
-		controlList[0] = "つよさをみる";
-		controlList[1] = "ならびかえ";
-		cbAction = new ControlBox(controller, 2);
-		cbAction.setControlNames(controlList);
-		cbAction.setLocation(310, 230);
-		cbAction.setVisible(false);
-		this.add(cbAction);
-
-		btnBack = new JButton("もどる");
-		btnBack.setFont(new Font("PixelMplus10",Font.PLAIN,13));
-		btnBack.setBounds(150, 470, 140, 60);
-		btnBack.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				onClickBtnBack();
-			}
-		});
-		this.add(btnBack);
-
-		this.setVisible(false);
+	
+	DBAccess dba;
+	
+	protected ArrayList<HashMap<String, String>> mHasMonsters;
+	
+	SubPanel subPanel;
+	protected String[] mControlList;
+	
+	private boolean mIsDisplaySubPanel, mIsChangeOrder;
+	private int mSrc;
+	
+	public HasMonstersPanel() {
+		super();
+		
+		dba = new DBAccess();
+		
+		mIsDisplaySubPanel = false;
+		mIsChangeOrder = false;
 	}
-
+	
+	public HasMonstersPanel(PanelController pc, SubPanel sb) {
+		this();
+		
+		this.mController = pc;
+		
+		mControlList = new String[2];
+		mControlList[0] = "つよさをみる";
+		mControlList[1] = "ならびかえ";
+		subPanel = sb;
+		subPanel.setControlNames(mControlList);
+	}
+	
 	/**
-	 * @deprecated 引数なしのほうをつかってください.
-	 * てもちモンスター情報表示用のパネルを表示
-	 * @param hmi てもちモンスターの情報を格納した配列
+	 * パネルの可視化
 	 */
-	@Deprecated
-	public void showHasMonsters(ArrayList<HashMap<String, String>> hmi) {
+	@Override
+	public void showPanel() {
 		HashMap<String, String> monsterInfo = null;
+		
+		mHasMonsters = dba.getHasMonstersInfo();
 
-		hasMonstersInfo = hmi;
-		hasMonstersNum = hmi.size();
-
-		// 引数から得た手持ちモンスターの情報から各モンスターのボタンを生成
-		for (int i = 0; i < hasMonstersNum; i++) {
-			// リロードの場合には作成済みのボタンを破棄
-			// -> nullチェックして、nullでなければ、パネルからボタンをremoveする。
-			if(!Objects.equals(btnMonsters[i], null)) {
-				this.remove(btnMonsters[i]);
+		// 更新(2回目以降のアクセス)なら、以前のボタンを除去して、アイテムのリスト表示領域のサイズをリセット
+		if (!Objects.equals(btnItems, null)) {
+			for(int i=0; i<btnItems.length; i++) {
+				if (!Objects.equals(btnItems[i], null)) {
+					pItemList.remove(btnItems[i]);
+				}
 			}
 
-			monsterInfo = hasMonstersInfo.get(i);
+			pItemList.setPreferredSize(new Dimension(280, 450));
+			resetCursorArr();
+		}
 
-			iconMonsters[i] = new ImageIcon(FilePath.monstersDirPath + monsterInfo.get("img"));
-			btnMonsters[i] = new JButton(
-					"<html>" + monsterInfo.get("name") + "  " + monsterInfo.get("state")
-					+ "<br/>HP: " + monsterInfo.get("hp") + " / " + monsterInfo.get("maxhp") + "</html>",
-					iconMonsters[i]);
-			btnMonsters[i].setFont(new Font("PixelMplus10",Font.PLAIN,13));
-			btnMonsters[i].setHorizontalAlignment(JButton.LEFT);
-			btnMonsters[i].setBorderPainted(false);
-			btnMonsters[i].setBounds(10, 5 + 75*i, 280, 70);
-			btnMonsters[i].addActionListener(new ActionListener(){
+		mNumOfItems = mHasMonsters.size();
+		btnItems = new JButton[mNumOfItems];
+		ImageIcon[] iconItems = new ImageIcon[mNumOfItems];
+		
+		// 引数から得た手持ちモンスターの情報から各モンスターのボタンを生成
+		for (int i=0; i<mNumOfItems; i++) {
+			if (i == 6) {
+				// panelサイズ変更
+				pItemList.setPreferredSize(new Dimension(280, 450 + 75*(mNumOfItems - i)));
+				revalidate();
+			}
+			
+			monsterInfo = mHasMonsters.get(i);
+
+			iconItems[i] = new ImageIcon(FilePath.monstersDirPath + mHasMonsters.get(i).get("img"));
+
+			btnItems[i] = new JButton("<html>" + monsterInfo.get("name") + "  " + monsterInfo.get("state")
+				+ "<br/>HP: " + monsterInfo.get("hp") + " / " + monsterInfo.get("maxhp") + "</html>", iconItems[i]);
+			btnItems[i].setFont(new Font("PixelMplus10",Font.PLAIN,13));
+			btnItems[i].setHorizontalAlignment(JButton.LEFT);
+			btnItems[i].setBorderPainted(false);
+			btnItems[i].setBounds(0, 75*i, 260, 70);
+			btnItems[i].addActionListener(new ActionListener(){
+				private int mBtnNum;
+				
+				public ActionListener setBtnNum(int btnNum) {
+					this.mBtnNum = btnNum;
+					return this;
+				}
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					onClickBtnMonster(e);
+					mSelectedItem = this.mBtnNum;
 				}
-			});
-			this.add(btnMonsters[i]);
-			
+			}.setBtnNum(i));
+			pItemList.add(btnItems[i]);
+			addToCursorArr(btnItems[i]);
 		}
 		
-		// 表示更新時、カーソル表示も更新が必要な場合は一緒に更新
-		if (mSelected != MONSTER_NO_SELECT) {
-			setCursor(mSelected);
+		super.showPanel();
+	}
+	
+	// ==================================================
+	//  ループ内処理
+	// ==================================================
+	/**
+	 * キー入力受付前の定期処理
+	 */
+	@Override
+	protected void periodicOpBeforeInput() {
+		int selectedSubPanelControl;
+		
+		// 暫定
+		if (exitHMPLoopFlag != RUNNING_HMP_LOOP) {
+			stop();
 		}
-
-		// 表示
-		this.setVisible(true);
-		this.requestFocus(true);
+		// =====
+		
+		if (mIsDisplaySubPanel == true) {
+			// サブパネル各項目処理チェック
+			selectedSubPanelControl = subPanel.getSelectedControl();
+			if (selectedSubPanelControl != SubPanel.CONTROL_NO_SELECTED) {
+				// サブパネル各項目処理
+				actionSubPanelControlSelected(selectedSubPanelControl);
+			} else {
+				// サブパネルのルーチンに戻る
+				subPanel.loop();
+			}
+			
+		} else {
+			// 本パネルの各項目処理チェック
+			super.periodicOpBeforeInput();
+		}
+	}
+	
+	/**
+	 * 上矢印キー入力受付時の処理
+	 */
+	@Override
+	protected void onPressKeyUp() {
+		if (mIsDisplaySubPanel == false) {
+			moveCursor(CURSOR_INDEX_MINUS);
+		}
 	}
 
 	/**
-	 * キャラクタが保持しているモンスターの一覧を表示する
+	 * 下矢印キー入力受付時の処理
 	 */
-	public void showHasMonsters() {
-		showHasMonsters(me.getHasMonstersInfo());
+	@Override
+	protected void onPressKeyDown() {
+		if (mIsDisplaySubPanel == false) {
+			moveCursor(CURSOR_INDEX_PLUS);
+		}
 	}
 
 	/**
-	 * 各モンスターのボタンをクリックしたときの処理
-	 * @param e
+	 * Zキー入力受付時の処理
 	 */
-	public void onClickBtnMonster(ActionEvent e) {
-		for (int i = 0; i < 6; i++) {
-			if (e.getSource() == btnMonsters[i]) {
-				if (changeOrderFlag == true) {
-					changeOrderMonsterDest = i;
-					setCursor(i);
-				}else{
-					mSelected = i;
-					setCursor(i);
+	@Override
+	protected void onPressKeyZ() {
+		if (mIsDisplaySubPanel == false) {
+			clickOnCursor();
+		}
+	}
+
+	/**
+	 * スペースキー入力受付時の処理
+	 */
+	@Override
+	protected void onPressKeySpace() {
+		if (mIsDisplaySubPanel == false) {
+			btnBack.doClick();
+		}
+	}
+	
+	/**
+	 * ループ処理終了直前の処理(最後の1回のみ)
+	 */
+	@Override
+	protected void finalOp() {
+		// もどるボタンによるループ離脱の処理
+		if (mIsChangeOrder == true) {
+			// 順序入れ替え時 -> サブパネル表示状態に戻す
+			subPanel.showPanel();
+			mIsDisplaySubPanel = true;
+			
+			setEnabledInner(false);
+		} else {
+			// ↑以外 -> このパネルを非表示に
+			this.requestFocus(false);
+			this.setVisible(false);
+		}
+	}
+	
+	/**
+	 * アイテム選択時の処理
+	 * @param selectedItemIndex 選択されたアイテムのインデックス
+	 */
+	@Override
+	public void actionItemSelected(int selectedItemIndex) {
+		map_main mp;
+		Battlemain bp;
+		
+		// サブパネル表示 or 順番入れ替え チェック -> 処理
+		if (mIsChangeOrder == true) {
+			// 順序入れ替え
+			if (selectedItemIndex != mSrc) {
+				try {
+					DataBase.wExecuteUpdate("update testhasmonsters set orderNum = 7 where orderNum = "
+							+ Integer.toString(selectedItemIndex + 1));
+					DataBase.wExecuteUpdate("update testhasmonsters set orderNum = "+ Integer.toString(selectedItemIndex + 1) +" where orderNum = "
+							+ Integer.toString(mSrc + 1));
+					DataBase.wExecuteUpdate("update testhasmonsters set orderNum = " + Integer.toString(mSrc + 1)
+					+ " where orderNum = 7");
+				} catch(SQLException sqle) {
+					sqle.printStackTrace();
 				}
-				break;
 			}
+			
+			// 入れ替えに伴うカーソル位置の変更
+			showPanel();
+			showCursor(mSrc);
+			
+			// サブパネル表示
+			subPanel.showPanel();
+			mIsDisplaySubPanel = true;
+			
+			setEnabledInner(false);
+			mIsChangeOrder = false;
+			
+		} else {
+			setEnabledInner(false);
+			mSrc = selectedItemIndex;
+			
+			// サブパネル表示
+			if (PanelController.getNowCalledLoopNum() == PanelController.BATTLE_PANEL) {
+				bp = (Battlemain )mController.getPanelInstance(PanelController.BATTLE_PANEL);
+				bp.setSubPanelLocation(500, 70 + 75*selectedItemIndex);
+			} else {
+				mp = (map_main )mController.getPanelInstance(PanelController.MAP_PANEL);
+				mp.setSubPanelLocation(500, 70 + 75*selectedItemIndex);
+			}
+			this.requestFocus(false);
+			mIsDisplaySubPanel = true;
+			
+			subPanel.showPanel();
+			subPanel.loop();
 		}
 	}
-
+	
 	/**
-	 * 
-	 * @param btn
+	 * サブパネルの項目選択時の処理
+	 * @param selectedSubPanelControlIndex 選択されたサブパネルの項目のインデックス
 	 */
-	public void lockChangeOrderMonsterBtn(int btn) {
-		btnMonsters[btn].setEnabled(false);
-	}
+	public void actionSubPanelControlSelected(int selectedSubPanelControlIndex) {
+		HasMonsterDetailPanel hmdp;
+		
+		switch (selectedSubPanelControlIndex) {
+		case ACTION_SHOW_DETAIL:
+			this.requestFocus(false);
+			mController.showHasMonsterDetailPanel(mHasMonsters.get(mSrc));
+			PanelController.callLoop(PanelController.HAS_MONSTER_DETAIL_PANEL);
+//			hmdp = (HasMonsterDetailPanel )mController.getPanelInstance(PanelController.HAS_MONSTER_DETAIL_PANEL);
+//			hmdp.loop();
 
-	/**
-	 * 
-	 * @param btn
-	 */
-	public void unlockChangeOrderMonsterBtn(int btn) {
-		btnMonsters[btn].setEnabled(true);
-	}
+			// サブパネルのルーチンに戻る
+			subPanel.requestFocus(true);
+			subPanel.loop();
+			break;
 
-	/**
-	 * もどるボタンをクリックしたときの処理　
-	 */
-	public void onClickBtnBack() {
-		exitHMPLoopFlag = EXIT_HMP_LOOP;
-	}
+		case ACTION_CHANGE_ORDER:
+			if (PanelController.getNowCalledLoopNum() == PanelController.BATTLE_PANEL) {
+				// バトル中の場合は，選択したモンスターを先頭に
+				try {
+					DataBase.wExecuteUpdate("update testhasmonsters set orderNum = 7 where orderNum = "
+							+ Integer.toString(mSrc + 1));
+					DataBase.wExecuteUpdate("update testhasmonsters set orderNum = "+ Integer.toString(mSrc + 1) +" where orderNum = 1");
+					DataBase.wExecuteUpdate("update testhasmonsters set orderNum = 1 where orderNum = 7");
+				} catch(SQLException sqle) {
+					sqle.printStackTrace();
+				}
 
-	/**
-	 * 各モンスターの項目に相当するボタンの有効化/無効化
-	 * @param b true -> 有効化 / false -> 無効化
-	 */
-	public void setEnabledMonsters(boolean b) {
-		for (int i = 0; i < 6; i++) {
-			if(!Objects.equals(btnMonsters[i], null)) {
-				btnMonsters[i].setEnabled(b);
+				// test code -> バトルへのモンスター情報&モンスター入れ替えエフェクト通知
+				showPanel();
+				repaint();
+				////
+
+				subPanel.stop();
+				subPanel.setVisible(false);
+				mIsDisplaySubPanel = false;
+
+				setEnabledInner(true);
+				this.requestFocus(true);
+				stop();
+
+				Battlemain.changeMonsterFlag = true;
+
+			} else {
+				// それ以外の場合は，入れ替え先のモンスターも選択
+				mIsChangeOrder = true;
+
+				subPanel.setVisible(false);
+				mIsDisplaySubPanel = false;
+
+				setEnabledInner(true);
+				btnItems[mSrc].setEnabled(false);
+				this.requestFocus(true);
 			}
+			break;
+
+		case ACTION_BACK:
+			subPanel.setVisible(false);
+			mIsDisplaySubPanel = false;
+
+			setEnabledInner(true);
+			this.requestFocus(true);
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	// ==================================================
+	//  その他
+	// ==================================================
+	public void setEnabledInner(boolean b) {
+		for (int i=0; i<mNumOfItems; i++) {
+			btnItems[i].setEnabled(b);
 		}
 		btnBack.setEnabled(b);
 	}
-
-	/**
-	 * コントロールボックス内部のコンポーネントの有効化/無効化
-	 * @param b true -> 有効化 / false -> 無効化
-	 */
-	public void setEnabledControlBox(boolean b) {
-		cbAction.setEnabledInner(b);
-	}
-
-	/**
-	 * 入力待機用ループ
-	 */
-	public void loop() {
-		int cursorLocation = MONSTER_NO_SELECT;
-		
-		key_state = 0;
-		exitHMPLoopFlag = RUNNING_HMP_LOOP;
-
-		while(true) {
-			if (Main.exitFlag != Main.RUNNING || exitHMPLoopFlag != RUNNING_HMP_LOOP) {
-				break;
-			}
-
-			// モンスター選択時 -> コントロールボックスを表示し、次の処理の選択肢を表示
-			if (mSelected != MONSTER_NO_SELECT) {
-				setEnabledMonsters(false);
-				cbAction.setVisible(true);
-				
-				cbLoop();
-				
-				cbAction.setVisible(false);
-				setEnabledMonsters(true);
-			}
-			mSelected = MONSTER_NO_SELECT;
-
-			// キー入力受付
-			cursorLocation = checkCursorOperation(cursorLocation);
-
-			// カーソル表示 (暫定的に青枠表示)
-			if (cursorLocation != MONSTER_NO_SELECT) {
-				setCursor(cursorLocation);
-			}
-
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		this.requestFocus(false);
-		this.setVisible(false);
-	}
-	
-	/**
-	 * カーソル操作受付
-	 * @param nowCursor 現在のカーソル位置
-	 * @return 次のカーソル位置
-	 */
-	public int checkCursorOperation(int nowCursor) {
-		int nextCursor = nowCursor;
-		
-		switch (key_state) {
-		case 1:  // UP
-			if (nextCursor > 0) {
-				nextCursor--;
-			}
-			break;
-		case 2:  // DOWN
-			if (nextCursor < hasMonstersNum - 1) {
-				nextCursor++;
-			}
-			break;
-		case 3:  // LEFT
-			// no operation
-			break;
-		case 4:  // RIRHT
-			// no operation
-			break;
-		case 5:  // Z
-			if (nextCursor != MONSTER_NO_SELECT) {
-				btnMonsters[nextCursor].doClick();
-			}
-			break;
-		case 6:  // X
-			// no operation
-			break;
-		case 7:  // スペースキー
-			this.requestFocus(false);
-			this.setVisible(false);
-			exitHMPLoopFlag = EXIT_HMP_LOOP;
-			break;
-		default:
-			break;
-		}
-		key_state = 0;
-		
-		return nextCursor;
-	}
-	
-	/**
-	 * 与えられた番号の位置にカーソル表示をセットする
-	 * @param cursorLocation カーソル表示を設置したい項目の位置番号
-	 */
-	public void setCursor(int cursorLocation) {
-		for (int i = 0; i < hasMonstersNum; i++) {
-			if (i == cursorLocation) {
-				btnMonsters[i].setBorderPainted(true);
-				if (changeOrderFlag) {
-					if (i != mSelected) {
-						btnMonsters[i].setBorder(new LineBorder(Color.RED, 2, true));
-					} else {
-						btnMonsters[i].setBorder(new LineBorder(Color.BLUE, 2, true));
-					}
-				} else {
-					btnMonsters[i].setBorder(new LineBorder(Color.BLUE, 2, true));
-				}
-			} else {
-				if (!(changeOrderFlag && i == mSelected)) {
-					btnMonsters[i].setBorderPainted(false);
-				}
-			}
-		}
-		this.repaint();
-	}
-	
-	/**
-	 * コントロールボックス表示時の入力待機処理
-	 */
-	public void cbLoop() {
-		int cbCursorLocation = ACTION_NO_SELECT;
-		int changeOrderDestCursor = MONSTER_NO_SELECT;
-		
-		HasMonsterDetailPanel hmdp;
-		
-		key_state = 0;
-		
-		CONTROL_LOOP:
-			while(true) {
-				if (Main.exitFlag != Main.RUNNING || exitHMPLoopFlag != RUNNING_HMP_LOOP) {
-					break;
-				}
-
-				cbSelected = cbAction.getSource();
-				switch(cbSelected) {
-				case ACTION_SHOW_DETAIL:
-					this.requestFocus(false);
-					controller.showHasMonsterDetailPanel(hasMonstersInfo.get(mSelected));
-					hmdp = (HasMonsterDetailPanel )controller.getPanelInstance(PanelController.HAS_MONSTER_DETAIL);
-					hmdp.loop();
-					this.requestFocus(true);
-					break;
-
-				case ACTION_CHANGE_ORDER:
-					if (PanelController.state == PanelController.STATE_BATTLE) {
-						// バトル中の場合は選択したモンスターを先頭に
-						try {
-							DataBase.wExecuteUpdate("update testhasmonsters set orderNum = 7 where orderNum = "
-									+ Integer.toString(mSelected + 1));
-							DataBase.wExecuteUpdate("update testhasmonsters set orderNum = "+ Integer.toString(mSelected + 1) +" where orderNum = 1");
-							DataBase.wExecuteUpdate("update testhasmonsters set orderNum = 1 where orderNum = 7");
-						} catch(SQLException sqle) {
-							sqle.printStackTrace();
-
-						}
-
-						// test code -> バトルへのモンスター情報&モンスター入れ替えエフェクト通知
-						showHasMonsters();
-						repaint();
-						////
-
-						exitHMPLoopFlag = EXIT_HMP_LOOP;
-						Battlemain.changeMonsterFlag = true;
-
-						break CONTROL_LOOP;
-
-					} else {
-						// マップ画面では、モンスターの順番を任意に入れ替え可能
-						changeOrderFlag = true;
-						setEnabledControlBox(false);
-						setEnabledMonsters(true);
-						lockChangeOrderMonsterBtn(mSelected);
-						while(true) {
-							if (Main.exitFlag != Main.RUNNING || exitHMPLoopFlag != RUNNING_HMP_LOOP) {
-								break;
-							}
-
-							if (changeOrderMonsterDest != MONSTER_NO_SELECT) {
-								try {
-									DataBase.wExecuteUpdate("update testhasmonsters set orderNum = 7 where orderNum = "
-											+ Integer.toString(mSelected + 1));
-									DataBase.wExecuteUpdate("update testhasmonsters set orderNum = "+ Integer.toString(mSelected + 1) +" where orderNum = "
-											+ Integer.toString(changeOrderMonsterDest + 1));
-									DataBase.wExecuteUpdate("update testhasmonsters set orderNum = " + Integer.toString(changeOrderMonsterDest + 1)
-									+ " where orderNum = 7");
-								} catch(SQLException sqle) {
-									sqle.printStackTrace();
-
-								}
-								unlockChangeOrderMonsterBtn(mSelected);
-								mSelected = changeOrderMonsterDest;
-								changeOrderMonsterDest = MONSTER_NO_SELECT;
-								showHasMonsters();
-								repaint();
-								break;
-							}
-							
-							changeOrderDestCursor = checkCursorOperation(changeOrderDestCursor);
-							// カーソル表示 (暫定的に赤枠表示)
-							if (changeOrderDestCursor != MONSTER_NO_SELECT) {
-								setCursor(changeOrderDestCursor);
-							}
-
-							try {
-								Thread.sleep(50);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-
-						changeOrderFlag = false;
-						setEnabledMonsters(false);
-						setEnabledControlBox(true);
-					}
-					break;
-
-				case ACTION_BACK:
-					break CONTROL_LOOP;
-
-				default:
-				}
-				cbSelected = ACTION_NO_SELECT;
-				
-				// キー入力受付
-				switch (key_state) {
-				case 1:  // UP
-					if (cbCursorLocation > 0) {
-						cbCursorLocation--;
-					}
-					break;
-				case 2:  // DOWN
-					if (cbCursorLocation < ACTION_CHANGE_ORDER) {
-						cbCursorLocation++;
-					}
-					break;
-				case 3:  // LEFT
-					// no operation
-					break;
-				case 4:  // RIGHT
-					// no operation
-					break;
-				case 5:  // Z
-					if (cbCursorLocation != ACTION_NO_SELECT || cbCursorLocation != ACTION_BACK) {
-						cbAction.emurateClick(cbCursorLocation);
-					}
-					break;
-				case 6:  // X
-					// no operation
-					break;
-				case 7:  // スペースキー
-					key_state = 0;
-					break CONTROL_LOOP;
-				default:
-					break;
-				}
-				key_state = 0;
-
-				// カーソル表示 (暫定的に青枠表示)
-				if (cbCursorLocation != ACTION_NO_SELECT || cbCursorLocation != ACTION_BACK) {
-					cbAction.setCursor(cbCursorLocation);
-				}
-
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int key;
-		
-		/* キーコードの格納 */
-		key = e.getKeyCode();
-
-		switch(key) {
-		case KeyEvent.VK_UP:
-			key_state = 1;
-			break;
-		case KeyEvent.VK_DOWN:
-			key_state = 2;
-			break;
-		case KeyEvent.VK_LEFT:
-			key_state = 3;
-			break;
-		case KeyEvent.VK_RIGHT:
-			key_state = 4;
-			break;
-		case KeyEvent.VK_Z:
-			key_state = 5;
-			break;
-		case KeyEvent.VK_X:
-			key_state = 6;
-			break;
-		case KeyEvent.VK_SPACE:
-			key_state = 7;
-			break;
-		default:
-			break;
-		}
-
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {}
-
-	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D)g;
-		
-		if (hasCb) {
-			g2.setColor(Color.white);
-			g2.fillRect(0, 0, 300, 540);
-			g2.setColor(Color.black);
-			g2.setStroke(new BasicStroke(3.0f));
-			g2.drawRect(0, 0, 300, 540);
-		}
-
-		super.paint(g);
-	}
-
 }

@@ -1,4 +1,4 @@
-package main;
+package gamesystem;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -9,6 +9,9 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
+import main.Main;
+import main.PanelController;
 
 public class BasePanel extends JPanel implements KeyListener {
 	// 定数
@@ -60,14 +63,11 @@ public class BasePanel extends JPanel implements KeyListener {
 	//  コンストラクタ
 	// ==================================================
 	/**
-	 * @deprecated コンストラクタ
-	 * @param controller パネルコントローラ
+	 * 埋め込み用
 	 */
-	@Deprecated
-	public BasePanel(PanelController controller) {
+	public BasePanel() {
 		super();
 		
-		this.mController = controller;
 		this.mPriority = PRIORITY_UNDEF;
 		
 		this.mKeyState = KEY_NO_TYPED;
@@ -80,6 +80,17 @@ public class BasePanel extends JPanel implements KeyListener {
 		this.setSize(PanelController.PANEL_WIDTH, PanelController.PANEL_HEIGHT);
 		this.addKeyListener(this);
 		this.setFocusable(true);
+	}
+	
+	/**
+	 * @deprecated コンストラクタ
+	 * @param controller パネルコントローラ
+	 */
+	@Deprecated
+	public BasePanel(PanelController controller) {
+		this();
+		
+		this.mController = controller;
 	}
 	
 	/**
@@ -153,6 +164,8 @@ public class BasePanel extends JPanel implements KeyListener {
 	public void loop() {
 		this.mKeyState = KEY_NO_TYPED;
 		this.mLoopState = LOOP_RUNNING;
+		
+		this. firstOp();
 		
 		while(true) {
 //			if (loopState != LOOP_RUNNING) {
@@ -233,6 +246,13 @@ public class BasePanel extends JPanel implements KeyListener {
 	//  (ここを書き換えてください)
 	// ==================================================
 	/**
+	 * ループ処理開始直後の処理(はじめの1回のみ)
+	 */
+	protected void firstOp() {
+		// no operation
+	}
+	
+	/**
 	 * キー入力受付前の定期処理
 	 */
 	protected void periodicOpBeforeInput() {
@@ -296,7 +316,7 @@ public class BasePanel extends JPanel implements KeyListener {
 	}
 	
 	/**
-	 * ループ処理終了直前の処理
+	 * ループ処理終了直前の処理(最後の1回のみ)
 	 */
 	protected void finalOp() {
 		this.requestFocus(false);
@@ -324,9 +344,11 @@ public class BasePanel extends JPanel implements KeyListener {
 	 * カーソル操作対象配列をクリアします
 	 */
 	protected void resetCursorArr() {
-		this.mCursorArr.clear();
-		this.mCursorLoc = CURSOR_UNLOC;
-		this.CURSOR_LOC_MAX = 0;
+		if (!Objects.equals(this.mCursorArr, null)) {
+			this.mCursorArr.clear();
+			this.mCursorLoc = CURSOR_UNLOC;
+			this.CURSOR_LOC_MAX = 0;
+		}
 	}
 	
 	/**

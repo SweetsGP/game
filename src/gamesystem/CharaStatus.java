@@ -5,6 +5,8 @@ import java.io.Serializable;
 //主人公のステータス設定
 
 public class CharaStatus implements Serializable {
+	
+	private static final long serialVersionUID = 7077339051727728278L;
 	/**
 	 * SaveDataIOクラスと連動
 	 * ・ここに記述したパラメータはすべてシリアライズ(直列化)されたあと、セーブデータに書き込まれます。(永続化)
@@ -28,16 +30,32 @@ public class CharaStatus implements Serializable {
 	 *   3) このクラスに対して変更を加えた場合は、下のserialVersionUIDを削除して同じものを生成し直してください。
 	 *      (Eclipseでは自動的に生成させることができます。)
 	 */
-	private static final long serialVersionUID = 5279363274821289193L;
 	
-	public int EnableStatus;	//存在するか
-	public String CharaName;	//主人公名10文字以内
-	public int CharaSex;		//Man:0 Woman:1
-	public int Location[] = new int[3];
-	public int RepopLocation[] = new int[3];
-	public int EventID;
+	private int EnableStatus;	//存在するか / 0: 無効, 1: 有効
+	private String CharaName;	//主人公名10文字以内
+	private int CharaSex;		//Man:0 Woman:1
+	private int Location[] = new int[3];
+	private int RepopLocation[] = new int[3];
+	private int EventID;
+	
+	private int volumeBgm;
+	private int volumeSe;
 
-	public CharaStatus() {}
+	public CharaStatus() {
+		this.EnableStatus = 0;
+		this.CharaName = "";
+		this.CharaSex = -1;
+		this.Location[0] = -1;
+		this.Location[1] = -1;
+		this.Location[2] = -1;
+		this.RepopLocation[0] = -1;
+		this.RepopLocation[1] = -1;
+		this.RepopLocation[2] = -1;
+		this.EventID = -1;
+		
+		this.volumeBgm = 50;
+		this.volumeSe = 50;
+	}
 	
 	public CharaStatus(int EnableStatus , String CharaName , int CharaSex
 			 , int L_Map , int L_x , int L_y , int RL_Map , int RL_x , int RL_y , int EventID){
@@ -96,6 +114,14 @@ public class CharaStatus implements Serializable {
 		this.EventID = id;
 	}
 	
+	public void setVolumeBgm(int volumeBgm) {
+		this.volumeBgm = volumeBgm;
+	}
+	
+	public void setVolumeSe(int volumeSe) {
+		this.volumeSe = volumeSe;
+	}
+	
 	// ==================================================
 	// ゲッター
 	// ==================================================
@@ -121,6 +147,14 @@ public class CharaStatus implements Serializable {
 	
 	public int getEventID() {
 		return this.EventID;
+	}
+	
+	public int getVolumeBgm() {
+		return this.volumeBgm;
+	}
+	
+	public int getVolumeSe() {
+		return this.volumeSe;
 	}
 
 }
