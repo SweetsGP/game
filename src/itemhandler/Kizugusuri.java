@@ -1,6 +1,5 @@
 package itemhandler;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -14,7 +13,7 @@ import javax.swing.JOptionPane;
 import Battle.Battlemain;
 import gamesystem.HasItemsPanel;
 import gamesystem.ItemDetailPanel;
-import gamesystem.MenuEvent;
+import gameutil.DBAccess;
 import main.DataBase;
 import main.Main;
 import main.PanelController;
@@ -56,17 +55,17 @@ class Kizugusuri extends ItemHandler {
 		targetmp.setVisible(false);
 		ihap.add(targetmp);
 		
-		btnBack = new JButton("もどる");
-		btnBack.setBounds(200, 530, 140, 60);
-		btnBack.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				targetmp.onClickBtnBack();
-				effectLoopFlag = EXIT_EFFECT_LOOP;
-			}
-		});
-		btnBack.setVisible(false);
-		ihap.add(btnBack);
+//		btnBack = new JButton("もどる");
+//		btnBack.setBounds(200, 530, 140, 60);
+//		btnBack.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				targetmp.onClickBtnBack();
+//				effectLoopFlag = EXIT_EFFECT_LOOP;
+//			}
+//		});
+//		btnBack.setVisible(false);
+//		ihap.add(btnBack);
 		
 		// アイテム破棄処理時
 		lConfirm = new JLabel(itemName + "を1つ捨てます。よろしいですか。");
@@ -108,8 +107,8 @@ class Kizugusuri extends ItemHandler {
 	@Override
 	void itemEffect() throws ItemHandlingFailedException {
 		int selected = 0;
-		MenuEvent menuEvent = new MenuEvent();
-		ArrayList<HashMap<String, String>> hasMonstersInfo = menuEvent.getHasMonstersInfo();
+		DBAccess dba = new DBAccess();
+		ArrayList<HashMap<String, String>> hasMonstersInfo = dba.getHasMonstersInfo();
 		
 		// アイテムの個数を取得
 		int itemCount = 0;
@@ -125,11 +124,11 @@ class Kizugusuri extends ItemHandler {
 		
 		effectLoopFlag = RUNNING_EFFECT_LOOP;
 		
-		targetmp.showHasMonsters(hasMonstersInfo);
 		setEnabledOnUse(true);
 		ihap.setVisible(true);
 		ihap.requestFocus(true);
 		ihap.repaint();
+		targetmp.showPanel();
 		
 		// 操作受付/待機ループ
 		while(true) {
@@ -137,12 +136,13 @@ class Kizugusuri extends ItemHandler {
 				break;
 			}
 			
+			targetmp.loop();
 			selected = targetmp.getSelectedMonster();
-			if (selected != 0) {  // アイテムの使用対象が選択された場合
+			if (selected >= 0) {  // アイテムの使用対象が選択された場合
 				// モンスターの最大HP取得
-				maxHp = Integer.parseInt(hasMonstersInfo.get(selected-1).get("maxhp"));
+				maxHp = Integer.parseInt(hasMonstersInfo.get(selected).get("maxhp"));
 				// モンスターの現在HP取得
-				beforeHp = Integer.parseInt(hasMonstersInfo.get(selected-1).get("hp"));
+				beforeHp = Integer.parseInt(hasMonstersInfo.get(selected).get("hp"));
 				
 				// HP回復計算
 				if ((maxHp - beforeHp) < recovery) {
@@ -154,7 +154,7 @@ class Kizugusuri extends ItemHandler {
 				try {
 					DataBase.wExecuteUpdate(
 							"update testhasmonsters set hp = " + Integer.toString(afterHp)
-							+ " where orderNum = " + Integer.toString(selected));
+							+ " where orderNum = " + Integer.toString(selected + 1));
 				} catch (SQLException sqle) {
 					throw new ItemHandlingFailedException();
 				}
@@ -163,14 +163,11 @@ class Kizugusuri extends ItemHandler {
 				itemCount = itemCount - 1;
 				
 				// リロード
-				targetmp.setVisible(false);
-				hasMonstersInfo = menuEvent.getHasMonstersInfo();
-				targetmp.showHasMonsters(hasMonstersInfo);
-				ihap.repaint();
+				targetmp.showPanel();
 				JOptionPane.showMessageDialog(null, itemName + "を使用しました。",
 						Main.GAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
 				
-				if (PanelController.state == PanelController.STATE_BATTLE) {
+				if (PanelController.getBeforeCalledLoopNum() == PanelController.BATTLE_PANEL) {
 					// バトル中 -> 1度の使用で相手ターンに(ループ離脱 -> バトル画面に戻る)
 					ihap.controller.showBattlemainPanel();
 					targetmp.onClickBtnBack();
@@ -188,11 +185,8 @@ class Kizugusuri extends ItemHandler {
 				}
 			}
 			
-			selected = 0;
-			targetmp.setSelectedMonster(selected);
-			
 			try {
-				Thread.sleep(50);
+				Thread.sleep(33);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -114,14 +114,15 @@ public class HasItemsPanel extends ItemsPanel {
 	public void actionItemSelected(int selectedItemIndex) {
 		ItemDetailPanel idp;
 
-		idp = (ItemDetailPanel )mController.getPanelInstance(PanelController.ITEM_DETAIL);
+		idp = (ItemDetailPanel )mController.getPanelInstance(PanelController.ITEM_DETAIL_PANEL);
 		if (mMode == MODE_SELL) {
 			idp.setMode(ItemDetailPanel.MODE_PRODUCT);
 			idp.setBuyOrSell(ItemDetailPanel.PRODUCT_SELL);
 		}
 		
 		mController.showItemDetailPanel(mHasItems.get(selectedItemIndex));
-		idp.loop();
+//		idp.loop();
+		PanelController.callLoop(PanelController.ITEM_DETAIL_PANEL);
 		
 		if (mMode == MODE_SELL) {
 			idp.setMode(ItemDetailPanel.MODE_DEFAULT);

@@ -148,11 +148,12 @@ public class HasMonsterDetailPanel extends JPanel implements KeyListener {
 				exitHMDPLoopFlag = EXIT_HMDP_LOOP;
 				requestFocus(false);
 				setVisible(false);
-				if (PanelController.state == PanelController.STATE_MAP) {
-					controller.showMapPanel();
-				} else if (PanelController.state == PanelController.STATE_BATTLE) {
+				if (PanelController.getBeforeCalledLoopNum() == PanelController.BATTLE_PANEL) {
 					controller.showBattlemainPanel();
+				} else {
+					controller.showMapPanel();
 				}
+				PanelController.callBack();
 			}
 		});
 		this.add(btnBack);

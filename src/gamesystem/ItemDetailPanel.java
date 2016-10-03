@@ -119,9 +119,9 @@ public class ItemDetailPanel extends JPanel implements KeyListener {
 				exitIDPLoopFlag = EXIT_IDP_LOOP;
 				requestFocus(false);
 				setVisible(false);
-				if (PanelController.state == PanelController.STATE_MAP) {
+				if (PanelController.getBeforeCalledLoopNum() == PanelController.MAP_PANEL) {
 					controller.showMapPanel();
-				} else if (PanelController.state == PanelController.STATE_BATTLE) {
+				} else {
 					controller.showBattlemainPanel();
 				}
 			}

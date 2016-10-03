@@ -13,7 +13,6 @@ import gamesystem.CharaStatus;
  * セーブデータ入出力クラス
  *   (セーブデータが2つ以上のファイルになる場合は改変必要)
  *   CharaStatusクラスに対して変更を加えます
- * @author kitayamahideya
  *
  */
 public class SaveDataIO {

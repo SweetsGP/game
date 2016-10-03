@@ -111,7 +111,7 @@ public class ProductsListPanel extends ItemsPanel {
 	public void actionItemSelected(int selectedItemIndex) {
 		ItemDetailPanel idp;
 
-		idp = (ItemDetailPanel )mController.getPanelInstance(PanelController.ITEM_DETAIL);
+		idp = (ItemDetailPanel )mController.getPanelInstance(PanelController.ITEM_DETAIL_PANEL);
 		idp.setMode(ItemDetailPanel.MODE_PRODUCT);
 		idp.setBuyOrSell(ItemDetailPanel.PRODUCT_BUY);
 		

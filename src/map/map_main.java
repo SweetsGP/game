@@ -17,6 +17,7 @@ import gamesystem.HasItemsPanel;
 import gamesystem.HasMonstersPanel;
 import gamesystem.MessageBoard;
 import gamesystem.ProductsListPanel;
+import gamesystem.SubPanel;
 import main.FilePath;
 import main.Main;
 import main.PanelController;
@@ -76,6 +77,7 @@ public class map_main extends JPanel implements KeyListener{
 	public HasMonstersPanel hasMonstersPanel;
 	public HasItemsPanel hasItemsPanel;
 	public ProductsListPanel productsListPanel;
+	public SubPanel subPanel;
 
 	public map_main() {}
 
@@ -115,8 +117,12 @@ public class map_main extends JPanel implements KeyListener{
 
 		t = new Thread[2];
 
+		// サブパネル
+		subPanel = new SubPanel(controller);
+		subPanel.setLocation(5, 5);
+		
 		// てもちモンスター表示パネル
-		hasMonstersPanel = new HasMonstersPanel(controller);
+		hasMonstersPanel = new HasMonstersPanel(controller, subPanel);
 		hasMonstersPanel.setLocation(180, 50);
 
 		// 所持アイテム一覧表示パネル
@@ -139,6 +145,7 @@ public class map_main extends JPanel implements KeyListener{
 		p.add(hasMonstersPanel);
 		p.add(hasItemsPanel);
 		p.add(productsListPanel);
+		p.add(subPanel);
 
 		p.setVisible(false);
 		p.setBounds(0, 0, 800, 600);
@@ -233,7 +240,7 @@ public class map_main extends JPanel implements KeyListener{
 
 						s.bgmStop();
 						controller.showBattlemainPanel();
-						bp_map = (Battlemain )controller.getPanelInstance(PanelController.BATTLE);
+						bp_map = (Battlemain )controller.getPanelInstance(PanelController.BATTLE_PANEL);
 						bp_map.loop(s);
 
 						p.setVisible(true);
@@ -725,6 +732,15 @@ public class map_main extends JPanel implements KeyListener{
 			break;
 		}
 		npc_tlk = 0;
+	}
+	
+	/**
+	 * サブパネルを再配置します．
+	 * @param x
+	 * @param y
+	 */
+	public void setSubPanelLocation(int x, int y) {
+		subPanel.setLocation(x, y);
 	}
 
 	@Override

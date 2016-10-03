@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import gamesystem.HasItemsPanel;
 import gamesystem.HasMonstersPanel;
 import gamesystem.MessageBoard;
+import gamesystem.SubPanel;
 import main.DataBase;
 import main.Main;
 import main.PanelController;
@@ -31,6 +32,7 @@ public class Battlemain extends JPanel implements ActionListener{
 
 	HasItemsPanel hip;
 	HasMonstersPanel hmp;
+	SubPanel subPanel;
 
 	JButton button1 = new JButton();
 	JButton button2 = new JButton();
@@ -117,7 +119,11 @@ public class Battlemain extends JPanel implements ActionListener{
 		hip.setLocation(300, 10);
 		add(hip);
 
-		hmp = new HasMonstersPanel(controller);
+		subPanel = new SubPanel(controller);
+		subPanel.setLocation(5, 5);
+		add(subPanel);
+		
+		hmp = new HasMonstersPanel(controller, subPanel);
 		hmp.setLocation(300, 10);
 		add(hmp);
 
@@ -223,7 +229,8 @@ public class Battlemain extends JPanel implements ActionListener{
 					}else if(i == 4){  // てもち
 						mainViewSetEnabled(false);
 
-						hmp.showHasMonsters();
+//						hmp.showHasMonsters();
+						hmp.showPanel();
 						hmp.loop();
 
 						mainViewSetEnabled(true);
@@ -345,6 +352,7 @@ public class Battlemain extends JPanel implements ActionListener{
 		requestFocus(false);
 //		controller.showTitlePanel();
 		controller.showMapPanel();
+		PanelController.reserveCallLoop(PanelController.MAP_PANEL);
 	}
 
 	public void mainViewSetEnabled(boolean b) {
@@ -508,5 +516,14 @@ public class Battlemain extends JPanel implements ActionListener{
 		}catch(Exception e)  {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	/**
+	 * サブパネルを再配置します．
+	 * @param x
+	 * @param y
+	 */
+	public void setSubPanelLocation(int x, int y) {
+		subPanel.setLocation(x, y);
 	}
 }

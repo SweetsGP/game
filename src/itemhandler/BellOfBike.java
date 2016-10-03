@@ -2,18 +2,12 @@ package itemhandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import gamesystem.MenuEvent;
-import main.DataBase;
 import main.Main;
-import main.PanelController;
 
 class BellOfBike extends ItemHandler {
 	// 自転車のベル

@@ -17,17 +17,11 @@ public class SaveDataAccess {
 	 */
 	public void writeReport() {
 		
-		// test code
-		CharaStatus writetest = new CharaStatus();
-		writetest.setCharaName("Hiroshi");
-		writetest.setCharaSex(1);
-		
-		SaveDataIO.writeSaveData(writetest);
+		SaveDataIO.writeSaveData(Main.saveData);
 		
 		CharaStatus readtest = SaveDataIO.readSaveData();
-		System.out.println(readtest.getCharaName());
-		System.out.println(readtest.getCharaSex());
-		/////
+		System.out.println("BGM Volume: " + readtest.getVolumeBgm());
+		System.out.println("SE Volume: " + readtest.getVolumeSe());
 		
 		JOptionPane.showMessageDialog(null, "セーブデータを書き込みました",
 				Main.GAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
